@@ -35,6 +35,14 @@ public class Movement : MonoBehaviour
         }
     }
 
+    public Vector3 GetMovementData() {
+        return transform.position;
+    }
+
+    public void SetMovementData(SaveData data) {
+        transform.position = data.position;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Swamp"))

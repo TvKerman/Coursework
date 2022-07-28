@@ -4,6 +4,6 @@ using UnityEngine;
 
 [Serializable]
 public class SaveData {
-    
+    public Vector3 position;
 }
 
