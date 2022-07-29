@@ -8,6 +8,8 @@ public class Movement : MonoBehaviour
     private Camera mainCam;
     private NavMeshAgent agent;
 
+    private Vector3 hitPoint;
+
     private bool isOnSwamp = false;
 
     private const float slowSpeed = 1f;
@@ -25,29 +27,32 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(0)) 
+        if (Input.GetMouseButton(0))
         {
-            Debug.Log("Click");
+
             RaycastHit hit;
             if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit))
             {
-                Debug.Log($"{hit.point}");
-                agent.SetDestination(hit.point);  
+                hitPoint = hit.point;
+                agent.SetDestination(hit.point);
             }
         }
     }
 
-    public Vector3 GetMovementData() {
-        return transform.position;
+    public MovementData GetMovementData()
+    {
+        return new MovementData() { position = transform.position, hitPoint = hitPoint };
     }
 
-    public void SetMovementData(SaveData data) {
+    public void SetMovementData(MovementData data)
+    {
         transform.position = data.position;
+        agent.SetDestination(data.hitPoint);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Swamp"))
+        if (other.CompareTag("Swamp"))
         {
             agent.speed = slowSpeed;
             agent.angularSpeed = slowAngSpeed;
