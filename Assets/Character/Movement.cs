@@ -7,6 +7,9 @@ public class Movement : MonoBehaviour
 {
     private Camera mainCam;
     private NavMeshAgent agent;
+    private RaycastHit hit;
+
+    private Vector3 hitPoint;
 
     private bool isOnSwamp = false;
 
@@ -27,20 +30,23 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetMouseButton(0)) 
         {
-            RaycastHit hit;
+            //RaycastHit hit;
             if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit))
             {
+                hitPoint = hit.point;
                 agent.SetDestination(hit.point);  
             }
         }
     }
 
-    public Vector3 GetMovementData() {
-        return transform.position;
+    public MovementData GetMovementData() {
+        Debug.Log($"{hitPoint.x}, {hitPoint.y}, {hitPoint.z}");
+        return new MovementData() {position = transform.position, point = hitPoint};
     }
 
-    public void SetMovementData(SaveData data) {
+    public void SetMovementData(MovementData data) {
         transform.position = data.position;
+        agent.SetDestination(data.point);
     }
 
     private void OnTriggerEnter(Collider other)

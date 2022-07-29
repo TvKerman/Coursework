@@ -17,6 +17,7 @@ public class JSONSaveSystem : ISaveSystem
         {
             writer.WriteLine(json);
         }
+        Debug.Log(_filePath);
     }
 
     public SaveData Load() {

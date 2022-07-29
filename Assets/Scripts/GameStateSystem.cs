@@ -15,13 +15,13 @@ public class GameStateSystem : MonoBehaviour
 
     private SaveData GetSaveData() {
         SaveData data = new SaveData();
-        data.position = _movement.GetMovementData();
+        data.MovementData = _movement.GetMovementData();
 
         return data;
     }
 
     private void SetSaveData(SaveData data) {
-        _movement.SetMovementData(data);
+        _movement.SetMovementData(data.MovementData);
     }
 
     public void SaveGame() {
