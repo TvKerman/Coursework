@@ -10,9 +10,9 @@ public class Movement : MonoBehaviour
 
     private bool isOnSwamp = false;
 
-    private const float slowSpeed = 3f;
+    private const float slowSpeed = 1f;
     private const float slowAngSpeed = 50f;
-    private const float defSpeed = 8f;
+    private const float defSpeed = 3.5f;
     private const float defAngSpeed = 360f;
 
 
@@ -20,16 +20,18 @@ public class Movement : MonoBehaviour
     {
         mainCam = Camera.main;
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = 8;
+        agent.speed = defSpeed;
     }
 
     void Update()
     {
         if (Input.GetMouseButton(0)) 
         {
+            Debug.Log("Click");
             RaycastHit hit;
             if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit))
             {
+                Debug.Log($"{hit.point}");
                 agent.SetDestination(hit.point);  
             }
         }
