@@ -14,10 +14,10 @@ TagManager:
   - UI
   - Swamp
   - Player
-  - 
-  - 
-  - 
-  - 
+  - MeleeEnemy
+  - MeleeUnit
+  - RangeEnemy
+  - RangeUnit
   - 
   - 
   - 
