@@ -1,27 +1,36 @@
 using System;
 using System.IO;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class JSONSaveSystem : ISaveSystem
 {
-    private readonly string _filePath;
-
+    private readonly string _filePathSavesDirectory;
+    private readonly string _fileNameAutoSave;
+    public readonly string _fileNameDirectory;
     public JSONSaveSystem ()
     {
-        _filePath = Application.persistentDataPath + "/Save.json";
+        _filePathSavesDirectory = Application.persistentDataPath;
+        _fileNameAutoSave = "/Save.json";
+        _fileNameDirectory = "/Saves/";
+        System.IO.Directory.CreateDirectory(_filePathSavesDirectory + _fileNameDirectory);
     }
 
-    public void Save(SaveData saveData) {
+    public IEnumerable<string> GetAll => Directory.GetFiles(_filePathSavesDirectory + _fileNameDirectory);
+
+    public void Save(SaveData saveData, bool isAutoSave, string fileName) {
+        Debug.Log(fileName);
+        saveData.Info.Id = fileName;
         var json = JsonUtility.ToJson(saveData);
-        using (var writer = new StreamWriter(_filePath))
+        using (var writer = new StreamWriter(GetPathSaveDirectory(isAutoSave, fileName)))
         {
             writer.WriteLine(json);
         }
     }
 
-    public SaveData Load() {
+    public SaveData Load(bool isAutoSave, string fileName) {
         string json = "";
-        using (var reader = new StreamReader(_filePath))
+        using (var reader = new StreamReader(GetPathSaveDirectory(isAutoSave, fileName)))
         {
             string line;
             while ((line = reader.ReadLine()) != null)
@@ -36,5 +45,22 @@ public class JSONSaveSystem : ISaveSystem
         }
 
         return JsonUtility.FromJson<SaveData>(json);
-    } 
+    }
+
+    public string GetPathSaveDirectory(bool isAutoSave, string fileName) {
+        if (isAutoSave)
+            return _filePathSavesDirectory + _fileNameAutoSave;
+        else 
+            return _filePathSavesDirectory + _fileNameDirectory + fileName;
+    }
+
+    public void DeleteSave(string filePath)
+    {
+        Debug.Log(filePath);
+        filePath = GetPathSaveDirectory(false, filePath);
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+    }
 }
