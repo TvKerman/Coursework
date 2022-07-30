@@ -52,8 +52,8 @@ public class SavePanel : MonoBehaviour
     }
 
     public void Add(SaveInfo save)
-    {
-        var item = Instantiate(_itemPrefab, _container);
+    {   
+        var item = Instantiate(_itemPrefab, _itemPrefab.transform.position + new Vector3(0, -50 * _items.Count, 0) , _container.rotation, _container);
         item.gameObject.SetActive(true);
         item.Init(save.Id);
         _items.Add(item);
@@ -90,6 +90,19 @@ public class SavePanel : MonoBehaviour
     {
         item.Deleted -= OnItemDeleted;
         item.Selected -= OnItemSelected;
+
+        bool isFlag = false;
+        foreach (var _item in _items) {
+            if (isFlag) {
+                _item.transform.position = new Vector3(_item.transform.position.x, _item.transform.position.y + 50, _item.transform.position.z);
+            }
+            
+            if (_item == item) {
+                isFlag = true;
+            }
+
+        }
+
         if (removeFromList)
         {
             _items.Remove(item);
