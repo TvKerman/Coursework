@@ -26,13 +26,13 @@ public class GameStateSystem : MonoBehaviour
         _movement.SetMovementData(data.movementData);
     }
 
-    public void SaveGame()
+    public void AutoSave()
     {
-        _saveSystem.Save(GetSaveData());
+        _saveSystem.Save(GetSaveData(), true);
     }
 
-    public void LoadGame()
+    public void LoadAutoSave()
     {
-        SetSaveData(_saveSystem.Load());
+        SetSaveData(_saveSystem.Load(true));
     }
 }

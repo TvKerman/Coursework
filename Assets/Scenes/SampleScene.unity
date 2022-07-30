@@ -844,7 +844,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 896151569}
         m_TargetAssemblyTypeName: GameStateSystem, Assembly-CSharp
-        m_MethodName: LoadGame
+        m_MethodName: LoadAutoSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1072,7 +1072,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 896151569}
         m_TargetAssemblyTypeName: GameStateSystem, Assembly-CSharp
-        m_MethodName: SaveGame
+        m_MethodName: AutoSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
