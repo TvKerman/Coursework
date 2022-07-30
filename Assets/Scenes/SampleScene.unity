@@ -1314,7 +1314,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 655905880}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2066739949}
+        m_TargetAssemblyTypeName: SavePanel, Assembly-CSharp
+        m_MethodName: ClosePanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &655905880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4409,7 +4421,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5493657649198619929, guid: b78826040b320ab44b198843fa7d2204, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 125.1
+      value: 94.7
       objectReference: {fileID: 0}
     - target: {fileID: 5493657649198619929, guid: b78826040b320ab44b198843fa7d2204, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
