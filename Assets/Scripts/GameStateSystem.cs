@@ -9,6 +9,7 @@ public class GameStateSystem : MonoBehaviour
     private Movement _movement;
 
     [SerializeField] private SavePanel savePanel;
+    [SerializeField] private GameObject menuPause;
 
     void Start()
     {
@@ -42,6 +43,7 @@ public class GameStateSystem : MonoBehaviour
 
     public void LoadAutoSave()
     {
+        menuPause.SetActive(false);
         SetSaveData(_saveSystem.Load(true));
     }
 

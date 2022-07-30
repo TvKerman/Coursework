@@ -18,6 +18,8 @@ public class SavePanel : MonoBehaviour
     private GameObject _panel;
     [SerializeField]
     private Transform _container;
+    [SerializeField]
+    private GameObject _pauseMenu;
 
     public event Action SaveRequested;
     public event Action<string> LoadRequested;
@@ -64,12 +66,20 @@ public class SavePanel : MonoBehaviour
     private void OnLoadBtnClicked()
     {
         _panel.gameObject.SetActive(true);
+        _deleteAllBtn.gameObject.SetActive(false);
+        _saveBtn.gameObject.SetActive(false);
+        _loadBtn.gameObject.SetActive(false);
     }
 
     private void OnItemSelected(SaveItem item)
     {
         LoadRequested?.Invoke(item.Id);
         _panel.gameObject.SetActive(false);
+        _deleteAllBtn.gameObject.SetActive(true);
+        _saveBtn.gameObject.SetActive(true);
+        _loadBtn.gameObject.SetActive(true);
+        _pauseMenu.gameObject.SetActive(false);
+        
     }
 
     private void OnDeleteAllBtnClicked()
@@ -115,5 +125,8 @@ public class SavePanel : MonoBehaviour
     public void ClosePanel() {
         
         _panel.gameObject.SetActive(false);
+        _deleteAllBtn.gameObject.SetActive(true);
+        _saveBtn.gameObject.SetActive(true);
+        _loadBtn.gameObject.SetActive(true);
     }
 }
