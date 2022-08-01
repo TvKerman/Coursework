@@ -74,6 +74,7 @@ public class SavePanel : MonoBehaviour
     private void OnItemSelected(SaveItem item)
     {
         LoadRequested?.Invoke(item.Id);
+        FindObjectOfType<Movement>().PauseIsOver();
         _panel.gameObject.SetActive(false);
         _deleteAllBtn.gameObject.SetActive(true);
         _saveBtn.gameObject.SetActive(true);

@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class MenuPause : MonoBehaviour
 {
-    // Start is called before the first frame update
+    
+
     public void PauseBtn() {
         gameObject.SetActive(true);
+
     }
 
     private void Update()
     {
         if (Input.GetKey(KeyCode.Escape)) {
+
+            FindObjectOfType<Movement>().PauseIsOver();
             gameObject.SetActive(false);
         }
     }
+
 }

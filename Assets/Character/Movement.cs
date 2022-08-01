@@ -11,12 +11,12 @@ public class Movement : MonoBehaviour
     private Vector3 hitPoint;
 
     private bool isOnSwamp = false;
+    private bool isPause = false;
 
     private const float slowSpeed = 1f;
     private const float slowAngSpeed = 50f;
     private const float defSpeed = 3.5f;
     private const float defAngSpeed = 360f;
-
 
     void Start()
     {
@@ -29,14 +29,24 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-
+            Debug.Log(isPause);
             RaycastHit hit;
-            if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit))
+            if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit) && !isPause)
             {
+                
                 hitPoint = hit.point;
                 agent.SetDestination(hit.point);
+                
             }
         }
+    }
+
+    public void PauseIsActive() {
+        isPause = true;
+    }
+
+    public void PauseIsOver() {
+        isPause = false;
     }
 
     public MovementData GetMovementData()
