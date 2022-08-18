@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class GridBehavior : MonoBehaviour
 {
-    public bool findDistance = false;
     public int rows = 10;
     public int columns = 10;
     public int scale = 1;
     public GameObject gridPrefab;
     public Vector3 leftBottomLocation = new Vector3(0, 0, 0);
-    public GameObject[,] gridArray;
-    public int startX = 0;
-    public int startY = 0;
-    public int endX = 2;
-    public int endY = 2;
-    public List<GameObject> path = new List<GameObject>();
+    
+    private List<GameObject> _path = new List<GameObject>();
+    private GameObject[,] gridArray;
+    private int _startX = 0;
+    private int _startY = 0;
+    private int _endX = 2;
+    private int _endY = 2;
     // Start is called before the first frame update
     void Awake()
     {
@@ -23,18 +23,18 @@ public class GridBehavior : MonoBehaviour
         if (gridPrefab)
             GenerateGrid();
         else
-            Debug.Log("���� ������� Grid");
+            Debug.Log("Не удалось инициализировать Grid");
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (findDistance) {
-            SetDistance();
-            SetPath();
-            findDistance = false;
-        }
-    }
+    //void Update()
+    //{
+    //    //if (findDistance) {
+    //    //    SetDistance();
+    //    //    SetPath();
+    //    //    findDistance = false;
+    //    //}
+    //}
 
     void GenerateGrid()
     {
@@ -55,8 +55,8 @@ public class GridBehavior : MonoBehaviour
 
     void SetDistance() {
         InitialSetUp();
-        int x = startX;
-        int y = startY;
+        int x = _startX;
+        int y = _startY;
         int[] testArray = new int[rows * columns];
         for (int step = 1; step < rows * columns; step++) {
             foreach (GameObject obj in gridArray) {
@@ -76,18 +76,18 @@ public class GridBehavior : MonoBehaviour
             }
         }
 
-        gridArray[startX, startY].GetComponent<GridStats>().visited = 0;
+        gridArray[_startX, _startY].GetComponent<GridStats>().visited = 0;
     }
 
     void SetPath() {
         int step;
-        int x = endX;
-        int y = endY;
+        int x = _endX;
+        int y = _endY;
         List<GameObject> tempList = new List<GameObject> ();
-        path.Clear();
-        if (gridArray[endX, endY] && gridArray[endX, endY].GetComponent<GridStats>().visited > 0)
+        _path.Clear();
+        if (gridArray[_endX, _endY] && gridArray[_endX, _endY].GetComponent<GridStats>().visited > 0)
         {
-            path.Add(gridArray[x, y]);
+            _path.Add(gridArray[x, y]);
             step = gridArray[x, y].GetComponent<GridStats>().visited - 1;
         }
         else {
@@ -112,8 +112,8 @@ public class GridBehavior : MonoBehaviour
                 tempList.Add(gridArray[x - 1, y]);
             }
 
-            GameObject tempObj = FindClosest(gridArray[endX, endY].transform, tempList);
-            path.Add(tempObj);
+            GameObject tempObj = FindClosest(gridArray[_endX, _endY].transform, tempList);
+            _path.Add(tempObj);
             x = tempObj.GetComponent<GridStats>().x;
             y = tempObj.GetComponent<GridStats>().y;
             tempList.Clear();
@@ -125,13 +125,13 @@ public class GridBehavior : MonoBehaviour
         switch (direction)
         {
             case Direction.Up:
-                return (y + 1 < rows && gridArray[x, y + 1] && gridArray[x, y + 1].GetComponent<GridStats>().visited == step);
+                return (y + 1 < rows && gridArray[x, y + 1] && gridArray[x, y + 1].GetComponent<GridStats>().visited == step && gridArray[x, y + 1].GetComponent<GridStats>().isFree);
             case Direction.Down:
-                return (y - 1 > -1 && gridArray[x, y - 1] && gridArray[x, y - 1].GetComponent<GridStats>().visited == step);
+                return (y - 1 > -1 && gridArray[x, y - 1] && gridArray[x, y - 1].GetComponent<GridStats>().visited == step && gridArray[x, y - 1].GetComponent<GridStats>().isFree);
             case Direction.Left:
-                return (x - 1 > -1 && gridArray[x - 1, y] && gridArray[x - 1, y].GetComponent<GridStats>().visited == step);
+                return (x - 1 > -1 && gridArray[x - 1, y] && gridArray[x - 1, y].GetComponent<GridStats>().visited == step && gridArray[x - 1, y].GetComponent<GridStats>().isFree);
             case Direction.Right:
-                return (x + 1 < columns && gridArray[x + 1, y] && gridArray[x + 1, y].GetComponent<GridStats>().visited == step);
+                return (x + 1 < columns && gridArray[x + 1, y] && gridArray[x + 1, y].GetComponent<GridStats>().visited == step && gridArray[x + 1, y].GetComponent<GridStats>().isFree);
         }
         return false;
     }
@@ -154,6 +154,7 @@ public class GridBehavior : MonoBehaviour
     void SetVisited(int x, int y, int step) {
         if (gridArray[x, y]) {
             gridArray[x, y].GetComponent<GridStats>().visited = step;
+            
         }
     }
 
@@ -166,10 +167,114 @@ public class GridBehavior : MonoBehaviour
                 indexNumber = i;
             }
         }
-
         return list[indexNumber];
     }
+
+    public void SetRangeMovement(int x, int y, int distance) {
+        _startX = x;
+        _startY = y;
+        InitialSetUp();
+        int[] testArray = new int[rows * columns];
+        for (int step = 1; step < distance; step++) {
+            foreach (GameObject obj in gridArray) {
+                if (obj && obj.GetComponent<GridStats>().visited == step - 1)
+                    TestFourDirections(obj.GetComponent<GridStats>().x, obj.GetComponent<GridStats>().y, step);
+            }
+        }
+
+        SetSelectRange(distance);
+    }
+
+    private void SetSelectRange(int distance) {
+        foreach (GameObject item in gridArray)
+        {
+            if (item.GetComponent<GridStats>().visited < distance && item.GetComponent<GridStats>().visited != -1)
+                item.GetComponent<GridStats>().SelectItem();
+        }
+    }
+
+    public void UpdateMap() {
+        foreach (GameObject item in gridArray) {
+            item.GetComponent<GridStats>().SelectGridItem();
+        }
+    }
+
+    public void SetStartCoordinates(Unit unit) {
+        _startX = unit.x;
+        _startY = unit.y;
+    }
+
+    public void SetEndCoordinates(int x, int y) {
+        _endX = x;
+        _endY = y;
+    }
+
+    public void SetEndCoordinates(GridStats item) {
+        _endX = item.x;
+        _endY = item.y;
+    }
+
+    public void FindPath() {
+        SetDistance();
+        SetPath();
+    }
+
+    public void ResetMap() {
+        InitialSetUp();
+        DeselectAllGridItems();
+        UpdateMap();
+    }
+
+    private void DeselectAllGridItems() {
+        foreach (var item in gridArray) {
+            item.GetComponent<GridStats>().DeselectItem();
+        }
+    }
+
+    public GameObject GetGridItem(int x, int y) {
+        return gridArray[x, y];
+    }
+
+    public GameObject GetGridItem(Unit unit) {
+        return GetGridItem(unit.x, unit.y);
+    }
+
+    public List<GameObject> path {
+        get {
+            return _path;
+        }
+    }
+
+    public GameObject lastItemInPath {
+        get {
+            if (_path.Count == 0) throw new System.Exception();
+            return _path[0];
+        }
+    }
+
+    public GameObject firstItemInPath {
+        get
+        {
+            if (_path.Count == 0) throw new System.Exception();
+            return _path[^1];
+        }     
+    }
+
+    public void ClearPath() {
+        _path.Clear();
+    }
+
+    public void RangeAttackDistance(Unit unit, int distance) {
+        foreach (var obj in gridArray) {
+            GridStats item = obj.GetComponent<GridStats>();
+            if (Mathf.Sqrt(Mathf.Pow(item.x - unit.x, 2) + Mathf.Pow(item.y - unit.y, 2)) <= (float)distance) {
+                item.SelectInRangedAttack();
+            }
+        }
+    }
 }
+
+
 
 enum Direction {
     Up = 1,
