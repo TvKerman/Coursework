@@ -11,7 +11,7 @@ public class GridStats : MonoBehaviour
     private bool _isSelected = false;
     public bool _isPath = false;
     private bool _isDefaultColorInit = false;
-    private bool _isFree = true;
+    public bool _isFree = true;
     private bool _isEnemyInGridItem = false;
     private bool _isRangedAttackGridItem = false;
     private Color _defaultColor;

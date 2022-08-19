@@ -17,21 +17,21 @@ public class Unit : MonoBehaviour, IComparable<Unit>
 
     private int _currentDistance;
     private int _currentActionPoint;
-    [SerializeField] private List<GridStats> _path = new List<GridStats>();
+    private List<GridStats> _path = new List<GridStats>();
 
     public void SetPath(List<GameObject> newPath) {
+        _currentDistance = distance;
         _path.Clear();
         foreach (GameObject item in newPath) {
             _path.Add(item.GetComponent<GridStats>());
         }
     }
 
-    public void Move()
+    public IEnumerator Move(StepSystem stepSystem)
     {
-        _currentDistance = distance;
-        Debug.Log($"Current distance {_currentDistance}");
+        //Debug.Log($"Start move");
         for (int i = 0; i < _path.Count;) {
-
+            Debug.Log($"{_currentDistance}");
             if (_currentDistance == 0) {
                 break;
             }
@@ -42,9 +42,14 @@ public class Unit : MonoBehaviour, IComparable<Unit>
             _path.RemoveAt(_path.Count - 1);
             
             _currentDistance--;
-            Debug.Log($"Current distance {_currentDistance}");
-            //yield return null;
+            if (_path.Count != 0)
+            {
+                yield return new WaitForSeconds(1000000000000000000000f);
+            }
         }
+        stepSystem.isMove = false;
+        stepSystem.gridBehavior.GetGridItem(this).GetComponent<GridStats>().SetIsOccupiedGridItem();
+        _currentDistance = distance;
     }
 
     public void SetGridCoordinates(GridStats currentItem) {

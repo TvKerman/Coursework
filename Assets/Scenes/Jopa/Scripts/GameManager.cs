@@ -20,6 +20,12 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        _stepSystem.CurrentStep();
+        if (!_stepSystem.isMove)
+            _stepSystem.CurrentStep();
+        else {
+            
+            StartCoroutine(_stepSystem.GetUnitCurrentStep().Move(_stepSystem));
+            
+        }
     }
 }

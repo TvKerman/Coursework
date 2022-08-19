@@ -15,10 +15,10 @@ public class StepSystem
     private bool _isStartStep = true;
     private bool _isEnemySelect = false;
 
-    private float _timeOut = 5f;
+    private float _timeOut = 3f;
     private float _timer;
     private bool _isWait = true;
-    private bool _isMove = false;
+    public bool isMove = false;
 
     private int _currentUnitStep = 0;
     public StepSystem ()
@@ -66,7 +66,7 @@ public class StepSystem
             } else {
                 TimeOut();
             }
-            if (unit.ActionPoint == 0) {
+            if (unit.ActionPoint == 0 && !isMove) {
                 unit.InitActionPoint();
                 EndCurrentStep();
             }
@@ -112,10 +112,8 @@ public class StepSystem
                         _gridBehavior.GetGridItem(unit).GetComponent<GridStats>().SetIsOccupiedGridItem();
                     } else if (IsRaycastHit && hitObject.GetComponent<GridStats>() && !unit.IsEmptyPath && hitObject.GetComponent<GridStats>() == unit.EndPath) {
                         _gridBehavior.GetGridItem(unit).GetComponent<GridStats>().SetIsFreeGridItem();
-                        unit.GetComponent<FriendUnit>().Move();
-                        _gridBehavior.GetGridItem(unit).GetComponent<GridStats>().SetIsOccupiedGridItem();
+                        isMove = true;
                         unit.performAction();
-                        _gridBehavior.SetStartCoordinates(unit.GetComponent<FriendUnit>());
                         _gridBehavior.ResetMap();
                         if (unit.ActionPoint != 0) {
                             _isStartStep = true;
@@ -172,7 +170,7 @@ public class StepSystem
                         enemyGridItem.DeselectInEnemyGridItem();
                         _isEnemySelect = false;
                         _gridBehavior.GetGridItem(unit).GetComponent<GridStats>().SetIsFreeGridItem();
-                        unit.Move();
+                        isMove = true;
                         enemyUnit.TakeDamage(unit.damage);
                         unit.performAction();
                         if (enemyUnit.healthPoint <= 0) {
@@ -207,7 +205,7 @@ public class StepSystem
                     _gridBehavior.ResetMap();
                     _isEndActionPoint = true;
                 }
-            } else if (InputEnterKeypadDown) {
+            } else if (InputEnterKeypadDown && !isMove) {
                 if (unit.ActionPoint != 0) {
                     _gridBehavior.ResetMap();
                 }
@@ -281,7 +279,7 @@ public class StepSystem
             _gridBehavior.FindPath();
             _gridBehavior.path.RemoveAt(0);
             enemy.SetPath(_gridBehavior.path);
-            enemy.Move();
+            isMove = true;
             enemy.performAction();
             if (Math.Sqrt(Math.Pow(enemy.x - priorityTarget.x, 2) + Math.Pow(enemy.y - priorityTarget.y, 2)) <= 1d)
             {
@@ -295,15 +293,13 @@ public class StepSystem
                     _units.Remove(priorityTarget);
                     GameObject.Destroy(priorityTarget.transform.root.gameObject);
                 }
-                else
-                {
-                    _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsOccupiedGridItem();
-                }
+
             }
         } else {
             if (Math.Sqrt(Math.Pow(priorityTarget.x - enemy.x, 2) + Math.Pow(priorityTarget.y - enemy.y, 2)) <= enemy.distanceAttack)
             {
                 enemy.DealDamage(priorityTarget);
+                enemyItem.SetIsOccupiedGridItem();
                 if (priorityTarget.healthPoint <= 0)
                 {
                     _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsFreeGridItem();
@@ -313,10 +309,7 @@ public class StepSystem
                     _units.Remove(priorityTarget);
                     GameObject.Destroy(priorityTarget.transform.root.gameObject);
                 }
-                else
-                {
-                    _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsOccupiedGridItem();
-                }
+
             } else {
                 _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsFreeGridItem();
                 _gridBehavior.SetEndCoordinates(_gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>());
@@ -334,14 +327,13 @@ public class StepSystem
                     tmpPath.Add(_gridBehavior.path[i]);
                 }
                 enemy.SetPath(tmpPath);
-                enemy.Move();
+                //enemy.Move();
+                isMove = true;
             }
             enemy.performAction();
         }
         _gridBehavior.ClearPath();
-        enemy.DeselectPath();
-        enemy.DeletePath();
-        enemyItem.SetIsOccupiedGridItem();
+        //enemyItem.SetIsOccupiedGridItem();
     }
 
     public void EndCurrentStep() {
@@ -349,18 +341,10 @@ public class StepSystem
         _currentUnitStep %= _units.Count;
     }
 
-    public bool isMove {
-        get { 
-            return _isMove;
+    public GridBehavior gridBehavior {
+        get {
+            return _gridBehavior;
         }
-    }
-
-    public void MoveIsOver() {
-        _isMove = false;
-    }
-
-    public void MoveIsStart() {
-        _isMove = true;
     }
 
     private void TimeOut() {
