@@ -199,7 +199,7 @@ public class GridBehavior : MonoBehaviour
         }
     }
 
-    public void SetStartCoordinates(Unit unit) {
+    public void SetStartCoordinates(DynamicBattlePrototype.Unit unit) {
         _startX = unit.x;
         _startY = unit.y;
     }
@@ -235,7 +235,7 @@ public class GridBehavior : MonoBehaviour
         return gridArray[x, y];
     }
 
-    public GameObject GetGridItem(Unit unit) {
+    public GameObject GetGridItem(DynamicBattlePrototype.Unit unit) {
         return GetGridItem(unit.x, unit.y);
     }
 
@@ -264,7 +264,7 @@ public class GridBehavior : MonoBehaviour
         _path.Clear();
     }
 
-    public void RangeAttackDistance(Unit unit, int distance) {
+    public void RangeAttackDistance(DynamicBattlePrototype.Unit unit, int distance) {
         foreach (var obj in gridArray) {
             GridStats item = obj.GetComponent<GridStats>();
             if (Mathf.Sqrt(Mathf.Pow(item.x - unit.x, 2) + Mathf.Pow(item.y - unit.y, 2)) <= (float)distance) {

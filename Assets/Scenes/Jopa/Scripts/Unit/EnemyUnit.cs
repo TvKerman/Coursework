@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyUnit : Unit
+public class EnemyUnit : DynamicBattlePrototype.Unit
 {
     //private GameObject _priorityTarget;
     //private bool _isPriorityTargetFind = false;

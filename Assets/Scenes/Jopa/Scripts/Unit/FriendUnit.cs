@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FriendUnit : Unit
+public class FriendUnit : DynamicBattlePrototype.Unit
 {
     public void InitBaseData()
     {
