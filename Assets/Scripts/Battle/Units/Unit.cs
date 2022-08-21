@@ -3,50 +3,54 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Unit : MonoBehaviour
+
+namespace TurnBasedBattleSystemFromRomchik
 {
-    public int health;
-    public int damage;
-    public int initiative;
-    public int armour;
-
-    public string type;
-
-    [SerializeField] Slider healthBar;
-    public StayPoint stayPoint;
-
-    public void Initialize(StayPoint currentStayPoint)
+    public class Unit : MonoBehaviour
     {
-        stayPoint = currentStayPoint;
-    }
+        public int health;
+        public int damage;
+        public int initiative;
+        public int armour;
 
-    public void SetHealth(int health)
-    {
-        healthBar.value = health;
-    }
+        public string type;
 
-    public void SetMaxValue(int health)
-    {
-        healthBar.maxValue = health;
-        healthBar.value = health;
-    }
+        [SerializeField] Slider healthBar;
+        public StayPoint stayPoint;
 
-    void Start()
-    {
-    }
-
-    void Update()
-    {
-        
-    }
-
-    public void Damage(int damage)
-    {
-        health -= damage;
-        SetHealth(health);
-        if (health <= 0)
+        public void Initialize(StayPoint currentStayPoint)
         {
-            Destroy(gameObject);
+            stayPoint = currentStayPoint;
+        }
+
+        public void SetHealth(int health)
+        {
+            healthBar.value = health;
+        }
+
+        public void SetMaxValue(int health)
+        {
+            healthBar.maxValue = health;
+            healthBar.value = health;
+        }
+
+        void Start()
+        {
+        }
+
+        void Update()
+        {
+
+        }
+
+        public void Damage(int damage)
+        {
+            health -= damage;
+            SetHealth(health);
+            if (health <= 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

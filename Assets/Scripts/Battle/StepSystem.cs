@@ -3,158 +3,162 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class StepSystem
+
+namespace TurnBasedBattleSystemFromRomchik
 {
-    private static List<Unit> unitList;
-    private bool _isAnimationOn = false;
-
-    private static int _currentUnitIndex = 0;
-
-
-    public StepSystem(List <Unit> _unitList)
+    public class StepSystem
     {
-        unitList = _unitList;
-        Refresh(ref unitList);
-    }
+        private static List<Unit> unitList;
+        private bool _isAnimationOn = false;
 
-    public bool isAnimationOn
-    {
-        get 
-        {
-            return _isAnimationOn;
-        }
-        set
-        {
-            _isAnimationOn = value;
-        }
-    }
+        private static int _currentUnitIndex = 0;
 
-    public int CurrentUnitIndex
-    {
-        get 
-        { 
-            return _currentUnitIndex; 
-        }
-        set
+
+        public StepSystem(List<Unit> _unitList)
         {
-            _currentUnitIndex = value;
-            if (_currentUnitIndex >= unitList.Count)
+            unitList = _unitList;
+            Refresh(ref unitList);
+        }
+
+        public bool isAnimationOn
+        {
+            get
             {
-                _currentUnitIndex = 0;
+                return _isAnimationOn;
+            }
+            set
+            {
+                _isAnimationOn = value;
             }
         }
-    }
 
-    public Unit UnitInList
-    {
-        get
+        public int CurrentUnitIndex
         {
-            if (unitList[CurrentUnitIndex] != null)
+            get
             {
-                return unitList[CurrentUnitIndex];
+                return _currentUnitIndex;
             }
-            else
+            set
             {
-                unitList.RemoveAt(CurrentUnitIndex);
-                if (CurrentUnitIndex < unitList.Count)
+                _currentUnitIndex = value;
+                if (_currentUnitIndex >= unitList.Count)
+                {
+                    _currentUnitIndex = 0;
+                }
+            }
+        }
+
+        public Unit UnitInList
+        {
+            get
+            {
+                if (unitList[CurrentUnitIndex] != null)
                 {
                     return unitList[CurrentUnitIndex];
                 }
                 else
                 {
-                    CurrentUnitIndex = 0;
-                    return unitList[CurrentUnitIndex];
+                    unitList.RemoveAt(CurrentUnitIndex);
+                    if (CurrentUnitIndex < unitList.Count)
+                    {
+                        return unitList[CurrentUnitIndex];
+                    }
+                    else
+                    {
+                        CurrentUnitIndex = 0;
+                        return unitList[CurrentUnitIndex];
+                    }
+                }
+            }
+            set
+            {
+                unitList[CurrentUnitIndex] = value;
+            }
+        }
+
+        public void Refresh(ref List<Unit> unitList)
+        {
+            unitList = unitList.OrderBy(unit => unit.initiative).ToList();
+        }
+
+        public void NewTurn()
+        {
+            Refresh(ref unitList);
+            CurrentUnitIndex++;
+        }
+
+        public void PlyerAttack(RaycastHit hit, MeleeEnemy isMeleeEnemyOnScene)
+        {
+            Unit unit = UnitInList.GetComponent<Unit>();
+            int damage;
+            damage = unit.damage;
+
+            Enemy enemy = hit.collider.gameObject.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                if (unit is RangeFriendly ||
+                    unit is MeleeFriendly && enemy is MeleeEnemy ||
+                    unit is MeleeFriendly && isMeleeEnemyOnScene == null)
+                {
+                    enemy.Damage(damage);
+                    Debug.Log(damage);
+                    NewTurn();
                 }
             }
         }
-        set
+
+        public void EnemyAttack(Enemy enemyType)
         {
-            unitList[CurrentUnitIndex] = value;
-        }
-    }
-
-    public void Refresh(ref List<Unit> unitList)
-    {
-        unitList = unitList.OrderBy(unit => unit.initiative).ToList();
-    }
-    
-    public void NewTurn()
-    {
-        Refresh(ref unitList);
-        CurrentUnitIndex++;
-    }
-
-    public void PlyerAttack(RaycastHit hit, MeleeEnemy isMeleeEnemyOnScene)
-    {
-        Unit unit = UnitInList.GetComponent<Unit>();
-        int damage;
-        damage = unit.damage;
-
-        Enemy enemy = hit.collider.gameObject.GetComponent<Enemy>();
-        if (enemy != null)
-        {
-            if (unit is RangeFriendly ||
-                unit is MeleeFriendly && enemy is MeleeEnemy ||
-                unit is MeleeFriendly && isMeleeEnemyOnScene == null)
+            int damage;
+            damage = enemyType.damage;
+            Unit friendlyToAttack = Unit.FindObjectOfType<MeleeFriendly>();
+            if (enemyType is MeleeEnemy)
             {
-                enemy.Damage(damage);
-                Debug.Log(damage);
-                NewTurn();
+                if (friendlyToAttack is null)
+                {
+                    friendlyToAttack = Unit.FindObjectOfType<RangeFriendly>();
+                }
             }
-        }
-    }
-
-    public void EnemyAttack(Enemy enemyType)
-    {
-        int damage;
-        damage = enemyType.damage;
-        Unit friendlyToAttack = Unit.FindObjectOfType<MeleeFriendly>();
-        if (enemyType is MeleeEnemy)
-        {
-            if (friendlyToAttack is null)
+            else if (enemyType is RangeEnemy)
             {
                 friendlyToAttack = Unit.FindObjectOfType<RangeFriendly>();
+                if (friendlyToAttack is null)
+                {
+                    friendlyToAttack = Unit.FindObjectOfType<MeleeFriendly>();
+                }
             }
+            friendlyToAttack.Damage(damage);
+            NewTurn();
         }
-        else if (enemyType is RangeEnemy)
+
+        public IEnumerator DeleyFriendly(Unit friendly)
         {
-            friendlyToAttack = Unit.FindObjectOfType<RangeFriendly>();
-            if (friendlyToAttack is null)
+            _isAnimationOn = true;
+            if (friendly != null)
             {
-                friendlyToAttack = Unit.FindObjectOfType<MeleeFriendly>();
+                friendly.GetComponent<Renderer>().material.color = Color.red;
             }
+            yield return new WaitForSeconds(0.5f);
+            if (friendly != null)
+            {
+                friendly.GetComponent<Renderer>().material.color = Color.blue;
+            }
+            _isAnimationOn = false;
         }
-        friendlyToAttack.Damage(damage);
-        NewTurn();
-    }
 
-    public IEnumerator DeleyFriendly(Unit friendly)
-    {
-        _isAnimationOn = true;
-        if (friendly != null)
+        public IEnumerator DeleyEnemy(Unit enemy)
         {
-            friendly.GetComponent<Renderer>().material.color = Color.red;
+            _isAnimationOn = true;
+            if (enemy != null)
+            {
+                enemy.GetComponent<Renderer>().material.color = Color.blue;
+            }
+            yield return new WaitForSeconds(0.5f);
+            if (enemy != null)
+            {
+                enemy.GetComponent<Renderer>().material.color = Color.red;
+            }
+            _isAnimationOn = false;
         }
-        yield return new WaitForSeconds(0.5f);
-        if (friendly != null)
-        {
-            friendly.GetComponent<Renderer>().material.color = Color.blue;
-        }
-        _isAnimationOn = false;
-    }
-
-    public IEnumerator DeleyEnemy(Unit enemy)
-    {
-        _isAnimationOn = true;
-        if (enemy != null)
-        {
-            enemy.GetComponent<Renderer>().material.color = Color.blue;
-        }
-        yield return new WaitForSeconds(0.5f);
-        if (enemy != null)
-        {
-            enemy.GetComponent<Renderer>().material.color = Color.red;
-        }
-        _isAnimationOn = false;
     }
 }
