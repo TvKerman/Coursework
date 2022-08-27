@@ -10,5 +10,7 @@ public class MeleeAttackFriendUnit : FriendUnit
         healthPoint = 100;
         damage = 20;
         initiative = 5;
+        InitHealthPoint();
+        UpdateSlider();
     }
 }

@@ -17,6 +17,9 @@ public class GridStats : MonoBehaviour
     private Color _defaultColor;
 
     public void SelectGridItem() {
+        if (gameObject.tag != "GridItem")
+            return;
+
         if (!_isDefaultColorInit && gameObject.GetComponent<MeshRenderer>().materials[0].color != Color.green && 
                                     gameObject.GetComponent<MeshRenderer>().materials[0].color != Color.blue && 
                                     gameObject.GetComponent<MeshRenderer>().materials[0].color != Color.red &&
@@ -50,6 +53,7 @@ public class GridStats : MonoBehaviour
         _isSelected = false;
         _isPath = false;
         _isRangedAttackGridItem = false;
+        _isEnemyInGridItem = false;
     }
 
     public void DeleteItemInPath() {

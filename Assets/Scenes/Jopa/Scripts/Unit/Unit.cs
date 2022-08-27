@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DynamicBattlePrototype
 {
     public class Unit : MonoBehaviour, IComparable<Unit>
     {
+        [SerializeField] private Slider slider; 
+
         public bool isSelected;
         public int x;
         public int y;
@@ -17,8 +20,18 @@ namespace DynamicBattlePrototype
         public int damage;
         public int distanceAttack;
 
+        public bool _isAnimation = false;
+        public bool _isStopAnimationCoroutine = true;
+        public bool _isStartCoroutine = false;
+        private bool _isPositiveDeltaX;
+        private bool _isPositiveDeltaZ;
         private int _currentDistance;
         private int _currentActionPoint;
+        private int _currentHealthPoint;
+        private float _deltaX;
+        private float _deltaZ;
+        private float _Exc = 0.0001f;
+        private float _speed = 2f;
         private List<GridStats> _path = new List<GridStats>();
 
         public void SetPath(List<GameObject> newPath)
@@ -31,31 +44,48 @@ namespace DynamicBattlePrototype
             }
         }
 
-        public IEnumerator Move(StepSystem stepSystem)
-        {
-            //Debug.Log($"Start move");
-            for (int i = 0; i < _path.Count;)
+        public IEnumerator Move(StepSystem stepSystem) {
+            _isStopAnimationCoroutine = false;
+            if (!IsEmptyPath && StartPath.x == x && StartPath.y == y)
+                _path.RemoveAt(_path.Count - 1);
+
+            while (!IsEmptyPath)
             {
-                Debug.Log($"{_currentDistance}");
                 if (_currentDistance == 0)
                 {
                     break;
                 }
-                gameObject.transform.position = new Vector3(_path[^1].transform.position.x, gameObject.transform.position.y, _path[^1].transform.position.z);
-                _path[^1].DeleteItemInPath();
-                _path[^1].SelectGridItem();
-                SetGridCoordinates(_path[^1]);
-                _path.RemoveAt(_path.Count - 1);
-
+        
+                _deltaX = StartPath.transform.position.x - transform.position.x;
+                _deltaZ = StartPath.transform.position.z - transform.position.z;
+                _isPositiveDeltaX = _deltaX > 0;
+                _isPositiveDeltaZ = _deltaZ > 0;
+                _isAnimation = true;
+                StartPath.DeleteItemInPath();
+                StartPath.SelectGridItem();
+                SetGridCoordinates(StartPath);
                 _currentDistance--;
-                if (_path.Count != 0)
-                {
-                    yield return new WaitForSeconds(1000000000000000000000f);
-                }
+                
+                yield return StartCoroutine(this.AnimationMove());  
             }
+            _isAnimation = false;
+            _isStopAnimationCoroutine = true;
             stepSystem.isMove = false;
             stepSystem.gridBehavior.GetGridItem(this).GetComponent<GridStats>().SetIsOccupiedGridItem();
             _currentDistance = distance;
+        }
+
+        public IEnumerator AnimationMove() {
+            while ((Math.Abs(StartPath.transform.position.x - transform.position.x) > _Exc ||
+                        Math.Abs(StartPath.transform.position.z - transform.position.z) > _Exc) &&
+                        ((StartPath.transform.position.x - transform.position.x > 0) == _isPositiveDeltaX) && 
+                        ((StartPath.transform.position.z - transform.position.z > 0) == _isPositiveDeltaZ)) {
+                transform.position = new Vector3(transform.position.x + _deltaX * Time.deltaTime * _speed, transform.position.y, transform.position.z + _deltaZ * Time.deltaTime * _speed);
+                yield return null;
+            }
+            transform.position = new Vector3(StartPath.x, transform.position.y, StartPath.y);
+            _path.RemoveAt(_path.Count - 1);
+            _isAnimation = false;
         }
 
         public void SetGridCoordinates(GridStats currentItem)
@@ -89,6 +119,14 @@ namespace DynamicBattlePrototype
             {
                 if (IsEmptyPath) throw new System.Exception();
                 return _path[0];
+            }
+        }
+
+        private GridStats StartPath
+        {
+            get {
+                if (IsEmptyPath) throw new System.Exception();
+                return _path[^1];
             }
         }
 
@@ -130,14 +168,49 @@ namespace DynamicBattlePrototype
             enemy.TakeDamage(damage);
         }
 
-        public void TakeDamage(int damage)
+        private void TakeDamage(int damage)
         {
-            healthPoint -= damage;
+            _currentHealthPoint -= damage;
         }
 
         public void DeletePath()
         {
             _path.Clear();
+        }
+
+        public void InitHealthPoint() {
+            _currentHealthPoint = healthPoint;
+        }
+
+        public void UpdateSlider() {
+            slider.value = ((float)_currentHealthPoint / healthPoint);
+        }
+
+        public bool IsAnimation {
+            get {
+                return _isAnimation;
+            }
+        }
+
+        public bool StopAnimationCoroutine {
+            get {
+                return _isStopAnimationCoroutine;
+            }
+        }
+
+        public bool IsStartCoroutine {
+            get {
+                return _isStartCoroutine;
+            }
+            set {
+                _isStartCoroutine = value;
+            }
+        }
+
+        public int CurrentHealthPoint {
+            get {
+                return _currentHealthPoint;
+            }
         }
     }
 }

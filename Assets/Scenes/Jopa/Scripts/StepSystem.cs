@@ -11,13 +11,15 @@ namespace DynamicBattlePrototype
         private List<EnemyUnit> _enemyUnits = new List<EnemyUnit>();
         private List<FriendUnit> _friendUnits = new List<FriendUnit>();
         private GridBehavior _gridBehavior;
+        private Unit _attackedUnit;
         private Camera mainCam;
 
         private bool _isEndActionPoint = false;
         private bool _isStartStep = true;
         private bool _isEnemySelect = false;
+        private bool _isAttackedUnit = false;
 
-        private float _timeOut = 3f;
+        private float _timeOut = 1f;
         private float _timer;
         private bool _isWait = true;
         public bool isMove = false;
@@ -61,7 +63,7 @@ namespace DynamicBattlePrototype
         public void CurrentStep()
         {
             Unit unit = GetUnitCurrentStep();
-            bool InputEnterKeypadDown = Input.GetKeyDown(KeyCode.KeypadEnter);
+            bool InputEnterDown = Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return);
             bool InputMouseKeyDown = Input.GetMouseButtonDown(0);
             if (unit is EnemyUnit)
             {
@@ -70,7 +72,6 @@ namespace DynamicBattlePrototype
                 if (!_isWait)
                 {
                     EnemyTurn(unit.transform.root.gameObject.GetComponent<EnemyUnit>());
-                    Debug.Log("Enemy Step");
                     _isWait = true;
                 }
                 else
@@ -85,7 +86,7 @@ namespace DynamicBattlePrototype
             }
             else
             {
-                if (unit.ActionPoint != 0 && !InputEnterKeypadDown)
+                if (unit.ActionPoint != 0 && !InputEnterDown)
                 {
                     if (_isStartStep)
                     {
@@ -108,7 +109,6 @@ namespace DynamicBattlePrototype
                         RaycastHit hit;
                         bool IsRaycastHit = Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit);
                         GameObject hitObject = hit.collider.gameObject;
-                        Debug.Log($"{IsRaycastHit}, {hit}, {hitObject}");
                         if (IsRaycastHit && hitObject.GetComponent<GridStats>() && (unit.IsEmptyPath || !unit.IsEmptyPath && hitObject.GetComponent<GridStats>() != unit.EndPath) && hitObject.GetComponent<GridStats>().isSelected)
                         {
                             if (!unit.IsEmptyPath)
@@ -135,6 +135,7 @@ namespace DynamicBattlePrototype
                         else if (IsRaycastHit && hitObject.GetComponent<GridStats>() && !unit.IsEmptyPath && hitObject.GetComponent<GridStats>() == unit.EndPath)
                         {
                             _gridBehavior.GetGridItem(unit).GetComponent<GridStats>().SetIsFreeGridItem();
+                            unit.IsStartCoroutine = true;
                             isMove = true;
                             unit.performAction();
                             _gridBehavior.ResetMap();
@@ -198,41 +199,31 @@ namespace DynamicBattlePrototype
                             enemyGridItem.DeselectInEnemyGridItem();
                             _isEnemySelect = false;
                             _gridBehavior.GetGridItem(unit).GetComponent<GridStats>().SetIsFreeGridItem();
+                            unit.IsStartCoroutine = true;
                             isMove = true;
-                            enemyUnit.TakeDamage(unit.damage);
+                            unit.DealDamage(enemyUnit);
+                            _attackedUnit = enemyUnit;
+                            _isAttackedUnit = true;
                             unit.performAction();
-                            if (enemyUnit.healthPoint <= 0)
-                            {
-                                enemyGridItem.SetIsFreeGridItem();
-                                enemyGridItem.SelectItem();
-                                if (enemyUnit.initiative < unit.initiative)
-                                    _currentUnitStep--;
-                                _enemyUnits.Remove(enemyUnit);
-                                _units.Remove(enemyUnit);
-                                GameObject.Destroy(hitObject);
-                            }
+
                             enemyGridItem.SelectGridItem();
+                            _gridBehavior.ResetMap();
+                            if (unit.ActionPoint != 0)
+                                _isStartStep = true;
                         }
                         else if (IsRaycastHit && enemyUnit && unit is RangedAttackFriendUnit && enemyGridItem.isEnemyInGridItem)
                         {
                             enemyGridItem.DeselectInEnemyGridItem();
                             _isEnemySelect = false;
-                            enemyUnit.TakeDamage(unit.damage);
+                            unit.DealDamage(enemyUnit);
+                            _attackedUnit = enemyUnit;
+                            _isAttackedUnit = true;
                             unit.performAction();
-                            if (enemyUnit.healthPoint <= 0)
-                            {
-                                enemyGridItem.SetIsFreeGridItem();
-                                if (enemyUnit.initiative < unit.initiative)
-                                    _currentUnitStep--;
-                                _enemyUnits.Remove(enemyUnit);
-                                _units.Remove(enemyUnit);
-                                GameObject.Destroy(hitObject);
-                            }
                             enemyGridItem.SelectGridItem();
                         }
                     }
                 }
-                else if (!InputEnterKeypadDown && unit.ActionPoint == 0)
+                else if (!InputEnterDown && unit.ActionPoint == 0)
                 {
                     if (!_isEndActionPoint)
                     {
@@ -240,7 +231,7 @@ namespace DynamicBattlePrototype
                         _isEndActionPoint = true;
                     }
                 }
-                else if (InputEnterKeypadDown && !isMove)
+                else if (InputEnterDown && !isMove)
                 {
                     if (unit.ActionPoint != 0)
                     {
@@ -282,7 +273,6 @@ namespace DynamicBattlePrototype
             }
             else if (enemy is RangedAttackEnemyUnit)
             {
-                //float minDistance = Mathf.Sqrt(Mathf.Pow(_gridBehavior.columns, 2) + Mathf.Pow(_gridBehavior.rows, 2));
                 int minDistance = _gridBehavior.columns * _gridBehavior.rows * _gridBehavior.scale;
                 foreach (var unit in _friendUnits)
                 {
@@ -300,7 +290,7 @@ namespace DynamicBattlePrototype
                         }
                         currentDistance++;
                     }
-                    //Debug.Log($"{unit}: distance {currentDistance}");
+                    
                     if (currentDistance < minDistance)
                     {
                         minDistance = currentDistance;
@@ -310,7 +300,7 @@ namespace DynamicBattlePrototype
                     _gridBehavior.GetGridItem(unit).GetComponent<GridStats>().SetIsOccupiedGridItem();
                     _gridBehavior.ClearPath();
                 }
-                //Debug.Log($"Priority target:{priorityTarget}");
+                
             }
 
             if (enemy is MeleeAttackEnemyUnit)
@@ -318,23 +308,17 @@ namespace DynamicBattlePrototype
                 _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsFreeGridItem();
                 _gridBehavior.SetEndCoordinates(_gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>());
                 _gridBehavior.FindPath();
+                _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsOccupiedGridItem();
                 _gridBehavior.path.RemoveAt(0);
                 enemy.SetPath(_gridBehavior.path);
                 isMove = true;
+                enemy.IsStartCoroutine = true;
                 enemy.performAction();
-                if (Math.Sqrt(Math.Pow(enemy.x - priorityTarget.x, 2) + Math.Pow(enemy.y - priorityTarget.y, 2)) <= 1d)
+                if (Math.Sqrt(Math.Pow(priorityTarget.x - enemy.EndPath.x, 2) + Math.Pow(priorityTarget.y - enemy.EndPath.y, 2)) <= 1d && enemy.EndPath.visited <= enemy.distance)
                 {
                     enemy.DealDamage(priorityTarget);
-                    if (priorityTarget.healthPoint <= 0)
-                    {
-                        _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsFreeGridItem();
-                        if (priorityTarget.initiative < enemy.initiative)
-                            _currentUnitStep--;
-                        _friendUnits.Remove(priorityTarget);
-                        _units.Remove(priorityTarget);
-                        GameObject.Destroy(priorityTarget.transform.root.gameObject);
-                    }
-
+                    _attackedUnit = priorityTarget;
+                    _isAttackedUnit = true;
                 }
             }
             else
@@ -342,23 +326,16 @@ namespace DynamicBattlePrototype
                 if (Math.Sqrt(Math.Pow(priorityTarget.x - enemy.x, 2) + Math.Pow(priorityTarget.y - enemy.y, 2)) <= enemy.distanceAttack)
                 {
                     enemy.DealDamage(priorityTarget);
+                    _attackedUnit = priorityTarget;
+                    _isAttackedUnit = true;
                     enemyItem.SetIsOccupiedGridItem();
-                    if (priorityTarget.healthPoint <= 0)
-                    {
-                        _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsFreeGridItem();
-                        if (priorityTarget.initiative < enemy.initiative)
-                            _currentUnitStep--;
-                        _friendUnits.Remove(priorityTarget);
-                        _units.Remove(priorityTarget);
-                        GameObject.Destroy(priorityTarget.transform.root.gameObject);
-                    }
-
                 }
                 else
                 {
                     _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsFreeGridItem();
                     _gridBehavior.SetEndCoordinates(_gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>());
                     _gridBehavior.FindPath();
+                    _gridBehavior.GetGridItem(priorityTarget).GetComponent<GridStats>().SetIsOccupiedGridItem();
                     _gridBehavior.path.RemoveAt(0);
                     int copyPath = 0;
                     for (int index = 1; index <= _gridBehavior.path.Count; index++)
@@ -377,17 +354,43 @@ namespace DynamicBattlePrototype
                     enemy.SetPath(tmpPath);
                     //enemy.Move();
                     isMove = true;
+                    enemy.IsStartCoroutine = true;
                 }
                 enemy.performAction();
             }
             _gridBehavior.ClearPath();
-            //enemyItem.SetIsOccupiedGridItem();
+        }
+
+        public void AnimationAttack() {
+            //Debug.Log($"Unit attacked:{_attackedUnit}, health point: {_attackedUnit.CurrentHealthPoint}");
+            _isAttackedUnit = false;
+            if (_attackedUnit.CurrentHealthPoint > 0)
+                _attackedUnit.UpdateSlider();
+            else
+                KillUnit(_attackedUnit);
+        }
+
+        public void KillUnit(Unit unit) {
+            _gridBehavior.GetGridItem(unit).GetComponent<GridStats>().SetIsFreeGridItem();
+            if (unit.initiative < GetUnitCurrentStep().initiative)
+                _currentUnitStep--;
+            if (unit is FriendUnit) {
+                _friendUnits.Remove(unit.transform.root.gameObject.GetComponent<FriendUnit>());
+            } else {
+                _enemyUnits.Remove(unit.transform.root.gameObject.GetComponent<EnemyUnit>());
+            }
+            _units.Remove(unit);
+            GameObject.Destroy(unit.transform.root.gameObject);
         }
 
         public void EndCurrentStep()
         {
             _currentUnitStep++;
             _currentUnitStep %= _units.Count;
+        }
+
+        public void AttackIsEnd() {
+            _isAttackedUnit = false;
         }
 
         public GridBehavior gridBehavior
@@ -408,6 +411,17 @@ namespace DynamicBattlePrototype
             {
                 _timer = _timeOut;
                 _isWait = false;
+            }
+        }
+
+        public Unit AttackedUnit {
+            get { return _attackedUnit; }
+            
+        }
+
+        public bool IsAttackedUnit {
+            get {
+                return _isAttackedUnit;
             }
         }
     }

@@ -13,6 +13,8 @@ public class RangedAttackFriendUnit : FriendUnit
         damage = 40;
         initiative = 2;
         distanceAttack = 7;
+        InitHealthPoint();
+        UpdateSlider();
     }
 
     //public int distanceAttack {

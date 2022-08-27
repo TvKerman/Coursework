@@ -7,6 +7,7 @@ TagManager:
   - Swamp
   - Ground
   - Button
+  - GridItem
   layers:
   - Default
   - TransparentFX

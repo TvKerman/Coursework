@@ -12,5 +12,7 @@ public class RangedAttackEnemyUnit : EnemyUnit
         initiative = 1;
         distance = 4;
         distanceAttack = 7;
+        InitHealthPoint();
+        UpdateSlider();
     }
 }

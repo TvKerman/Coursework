@@ -23,12 +23,16 @@ namespace DynamicBattlePrototype
         void Update()
         {
             if (!_stepSystem.isMove)
-                _stepSystem.CurrentStep();
-            else
             {
+                _stepSystem.CurrentStep();
 
-                StartCoroutine(_stepSystem.GetUnitCurrentStep().Move(_stepSystem));
-
+                if (_stepSystem.GetUnitCurrentStep().IsStartCoroutine) {
+                    StartCoroutine(_stepSystem.GetUnitCurrentStep().Move(_stepSystem));
+                    _stepSystem.GetUnitCurrentStep().IsStartCoroutine = false;
+                }
+                if (_stepSystem.GetUnitCurrentStep().StopAnimationCoroutine && _stepSystem.IsAttackedUnit) {
+                    _stepSystem.AnimationAttack();
+                }
             }
         }
     }

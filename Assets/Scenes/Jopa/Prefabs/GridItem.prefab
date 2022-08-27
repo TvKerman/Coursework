@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7088820520416659976}
   m_Layer: 0
   m_Name: GridItem
-  m_TagString: Untagged
+  m_TagString: GridItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -113,3 +113,5 @@ MonoBehaviour:
   visited: -1
   x: 0
   y: 0
+  _isPath: 0
+  _isFree: 1

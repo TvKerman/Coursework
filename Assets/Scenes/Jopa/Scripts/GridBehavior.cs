@@ -1,13 +1,17 @@
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GridBehavior : MonoBehaviour
 {
-    public int rows = 10;
-    public int columns = 10;
+    public int rows;
+    public int columns;
     public int scale = 1;
     public GameObject gridPrefab;
+    public GameObject boxPrefab;
+    public GameObject voidPrefab;
     public Vector3 leftBottomLocation = new Vector3(0, 0, 0);
     
     private List<GameObject> _path = new List<GameObject>();
@@ -16,25 +20,15 @@ public class GridBehavior : MonoBehaviour
     private int _startY = 0;
     private int _endX = 2;
     private int _endY = 2;
-    // Start is called before the first frame update
+
     void Awake()
     {
-        gridArray = new GameObject[columns, rows];
         if (gridPrefab)
-            GenerateGrid();
+            GenerateGrid(GenerateLevelData());
+            //GenerateGrid();
         else
             Debug.Log("Не удалось инициализировать Grid");
     }
-
-    // Update is called once per frame
-    //void Update()
-    //{
-    //    //if (findDistance) {
-    //    //    SetDistance();
-    //    //    SetPath();
-    //    //    findDistance = false;
-    //    //}
-    //}
 
     void GenerateGrid()
     {
@@ -51,6 +45,67 @@ public class GridBehavior : MonoBehaviour
 
             }
         }
+    }
+
+    void GenerateGrid(string[] data) {
+        columns = Convert.ToInt32(data[0]);
+        rows = Convert.ToInt32(data[1]);
+        gridArray = new GameObject[columns, rows];
+        List<List<char>> level = ConvertLevelData(data);
+
+        for (int i = 0; i < columns; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                if (level[i][j] == '*') {
+                    GameObject obj = Instantiate(gridPrefab, new Vector3(leftBottomLocation.x + scale * i, leftBottomLocation.y, leftBottomLocation.z + scale * j), Quaternion.identity);
+                    obj.transform.SetParent(gameObject.transform);
+                    obj.GetComponent<GridStats>().x = i;
+                    obj.GetComponent<GridStats>().y = j;
+                    gridArray[i, j] = obj;
+                }
+                if (level[i][j] == 'b') {
+                    GameObject obj = Instantiate(boxPrefab, new Vector3(leftBottomLocation.x + scale * i, leftBottomLocation.y, leftBottomLocation.z + scale * j), Quaternion.identity);
+                    obj.transform.SetParent(gameObject.transform);
+                    obj.GetComponent<GridStats>().x = i;
+                    obj.GetComponent<GridStats>().y = j;
+                    obj.GetComponent<GridStats>().SetIsOccupiedGridItem();
+                    gridArray[i, j] = obj;
+                }
+                if (level[i][j] == 'v') {
+                    GameObject obj = Instantiate(voidPrefab, new Vector3(leftBottomLocation.x + scale * i, leftBottomLocation.y, leftBottomLocation.z + scale * j), Quaternion.identity);
+                    obj.transform.SetParent(gameObject.transform);
+                    obj.GetComponent<GridStats>().x = i;
+                    obj.GetComponent<GridStats>().y = j;
+                    obj.GetComponent<GridStats>().SetIsOccupiedGridItem();
+                    gridArray[i, j] = obj;
+                }
+            }
+        }
+    }
+
+    List<List<char>> ConvertLevelData(string[] data) {
+        List<List<char>> level = new List<List<char>>();
+        for (int i = 2; i < data.Length; i++)
+        {
+            level.Add(new List<char>());
+            for (int j = 0; j < data[i].Length; j++)
+            {
+                if (data[i][j] == '*' || data[i][j] == 'v' || data[i][j] == 'b')
+                    level[i - 2].Add(data[i][j]);
+            }
+        }
+
+        return level;
+    }
+
+    string[] GenerateLevelData() {
+        string filename = Directory.GetCurrentDirectory() + "\\Assets\\Scenes\\Jopa\\Grid\\Grid3.txt";
+        StreamReader levelfile = new StreamReader(filename);
+        string level = levelfile.ReadToEnd();
+        levelfile.Close();
+        string[] data = level.Split(new char[] { ' ', '\n' });
+        return data;
     }
 
     void SetDistance() {
@@ -187,7 +242,7 @@ public class GridBehavior : MonoBehaviour
 
     private void SetSelectRange(int distance) {
         foreach (GameObject item in gridArray)
-        {
+        { 
             if (item.GetComponent<GridStats>().visited < distance && item.GetComponent<GridStats>().visited != -1)
                 item.GetComponent<GridStats>().SelectItem();
         }
@@ -195,7 +250,8 @@ public class GridBehavior : MonoBehaviour
 
     public void UpdateMap() {
         foreach (GameObject item in gridArray) {
-            item.GetComponent<GridStats>().SelectGridItem();
+            if (item)
+                item.GetComponent<GridStats>().SelectGridItem();
         }
     }
 

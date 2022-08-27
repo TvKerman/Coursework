@@ -10,5 +10,7 @@ public class MeleeAttackEnemyUnit : EnemyUnit
         healthPoint = 80;
         damage = 20;
         initiative = 6;
+        InitHealthPoint();
+        UpdateSlider();
     }
 }
