@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Swamp
+  - PressZone
+  - Button
   layers:
   - Default
   - TransparentFX
