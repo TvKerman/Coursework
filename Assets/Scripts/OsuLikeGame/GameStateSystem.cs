@@ -9,6 +9,7 @@ public class GameStateSystem : MonoBehaviour
     private Movement _movement;
 
     [SerializeField] private SavePanel savePanel;
+    [SerializeField] private GameObject menuPause;
 
     void Start()
     {
@@ -42,6 +43,8 @@ public class GameStateSystem : MonoBehaviour
 
     public void LoadAutoSave()
     {
+        menuPause.SetActive(false);
+        FindObjectOfType<Movement>().PauseIsOver();
         SetSaveData(_saveSystem.Load(true));
     }
 
@@ -50,8 +53,8 @@ public class GameStateSystem : MonoBehaviour
     {
         SaveData saveData = GetSaveData();
         saveData.Info = new SaveInfo();
-        Debug.Log(DateTime.UtcNow.ToString(
-            "ss-mm-hh-dd-MM-yyyy") + ".json");
+        //Debug.Log(DateTime.UtcNow.ToString(
+        //    "ss-mm-hh-dd-MM-yyyy") + ".json");
         _saveSystem.Save(saveData, false, DateTime.UtcNow.ToString(
             "ss-mm-hh-dd-MM-yyyy") + ".json");
         savePanel.Add(saveData.Info);

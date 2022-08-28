@@ -18,6 +18,8 @@ public class SavePanel : MonoBehaviour
     private GameObject _panel;
     [SerializeField]
     private Transform _container;
+    [SerializeField]
+    private GameObject _pauseMenu;
 
     public event Action SaveRequested;
     public event Action<string> LoadRequested;
@@ -52,8 +54,8 @@ public class SavePanel : MonoBehaviour
     }
 
     public void Add(SaveInfo save)
-    {
-        var item = Instantiate(_itemPrefab, _container);
+    {   
+        var item = Instantiate(_itemPrefab, _itemPrefab.transform.position + new Vector3(0, -50 * _items.Count, 0) , _container.rotation, _container);
         item.gameObject.SetActive(true);
         item.Init(save.Id);
         _items.Add(item);
@@ -64,12 +66,21 @@ public class SavePanel : MonoBehaviour
     private void OnLoadBtnClicked()
     {
         _panel.gameObject.SetActive(true);
+        _deleteAllBtn.gameObject.SetActive(false);
+        _saveBtn.gameObject.SetActive(false);
+        _loadBtn.gameObject.SetActive(false);
     }
 
     private void OnItemSelected(SaveItem item)
     {
         LoadRequested?.Invoke(item.Id);
+        FindObjectOfType<Movement>().PauseIsOver();
         _panel.gameObject.SetActive(false);
+        _deleteAllBtn.gameObject.SetActive(true);
+        _saveBtn.gameObject.SetActive(true);
+        _loadBtn.gameObject.SetActive(true);
+        _pauseMenu.gameObject.SetActive(false);
+        
     }
 
     private void OnDeleteAllBtnClicked()
@@ -90,6 +101,19 @@ public class SavePanel : MonoBehaviour
     {
         item.Deleted -= OnItemDeleted;
         item.Selected -= OnItemSelected;
+
+        bool isFlag = false;
+        foreach (var _item in _items) {
+            if (isFlag) {
+                _item.transform.position = new Vector3(_item.transform.position.x, _item.transform.position.y + 50, _item.transform.position.z);
+            }
+            
+            if (_item == item) {
+                isFlag = true;
+            }
+
+        }
+
         if (removeFromList)
         {
             _items.Remove(item);
@@ -102,5 +126,8 @@ public class SavePanel : MonoBehaviour
     public void ClosePanel() {
         
         _panel.gameObject.SetActive(false);
+        _deleteAllBtn.gameObject.SetActive(true);
+        _saveBtn.gameObject.SetActive(true);
+        _loadBtn.gameObject.SetActive(true);
     }
 }

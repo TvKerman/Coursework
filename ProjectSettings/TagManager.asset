@@ -5,8 +5,14 @@ TagManager:
   serializedVersion: 2
   tags:
   - Swamp
+<<<<<<< HEAD
   - PressZone
   - Button
+=======
+  - Ground
+  - Button
+  - GridItem
+>>>>>>> remotes/origin/master
   layers:
   - Default
   - TransparentFX
