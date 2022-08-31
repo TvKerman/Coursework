@@ -3,11 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - Swamp
-  - Ground
-  - Button
-  - GridItem
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -15,12 +11,12 @@ TagManager:
   - 
   - Water
   - UI
-  - Swamp
-  - Player
-  - MeleeEnemy
-  - MeleeUnit
-  - RangeEnemy
-  - RangeUnit
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 

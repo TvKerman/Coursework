@@ -33,10 +33,8 @@ public class Movement : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit) && !isPause)
             {
-                
                 hitPoint = hit.point;
-                agent.SetDestination(hit.point);
-                
+                agent.SetDestination(hit.point); 
             }
         }
     }
