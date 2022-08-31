@@ -414,9 +414,9 @@ namespace DynamicBattlePrototype
             }
         }
 
-        public Unit AttackedUnit {
-            get { return _attackedUnit; }
-            
+
+        public List<Unit> units {
+            get { return _units; }
         }
 
         public bool IsAttackedUnit {

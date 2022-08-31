@@ -55,7 +55,7 @@ public class MainMenu : MonoBehaviour
     public void Bonus() {
         // Возможно стоит добавить какое-то меню с настройкой сцены...
         Debug.Log("Адекватным вход запрещён");
-        SceneManager.LoadScene(4);
+        SceneManager.LoadScene(3);
     }
 
     public void Exit() {
