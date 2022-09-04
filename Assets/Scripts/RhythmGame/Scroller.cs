@@ -3,10 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Scroller : MonoBehaviour
+public class Scroller : MonoBehaviour, IMiniGameLogic
 {
     [SerializeField] private float tempo = 0.1f;
     [SerializeField] private GameObject square;
+
+    [SerializeField] private ButtonController ButtonBlue;
+    [SerializeField] private ButtonController ButtonGreen;
+    [SerializeField] private ButtonController ButtonRed;
+
+    private int _currentCount = 0;
+    private int _endMiniGame = 6;
+
     private bool isStarted = false;
 
     private GameObject currentSquare;
@@ -29,10 +37,17 @@ public class Scroller : MonoBehaviour
         spawnPointsList = FindObjectsOfType<SpawnPoint>().Select(x => (SpawnPoint)x).ToList();
     }
 
-    void Update()
-    {
+    public void GameLogic() {
+        ButtonBlue.ButtonLogic();
+        ButtonGreen.ButtonLogic();
+        ButtonRed.ButtonLogic();
+
         if (!isStarted)
         {
+            _currentCount++;
+            if (isEndMiniGame)
+                return;
+
             SpawnPoint currentSpawnPoint = GetRandomPos(spawnPointsList);
             Vector3 currentCordinate = new Vector3(currentSpawnPoint.transform.localPosition.x,
                                                     currentSpawnPoint.transform.localPosition.y,
@@ -51,6 +66,19 @@ public class Scroller : MonoBehaviour
                                                     currentSquare.transform.position.y - tempo,
                                                     currentSquare.transform.position.z);
         }
+    }
+
+    public void InitMiniGame() {
+        _currentCount = 0;
+    }
+
+    public int currentCount {
+        get { return _currentCount; }
+        set { _currentCount = value; }
+    }
+
+    public bool isEndMiniGame {
+        get { return _currentCount >= _endMiniGame; }
     }
 
     private SpawnPoint GetRandomPos(List<SpawnPoint> spawnPoints)
