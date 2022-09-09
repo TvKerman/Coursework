@@ -5,7 +5,7 @@ using System.Linq;
 
 public class Scroller : MonoBehaviour
 {
-    [SerializeField] private float tempo = 0.1f;
+    private float tempo = 1f;
     [SerializeField] private GameObject square;
     private bool isStarted = false;
 
