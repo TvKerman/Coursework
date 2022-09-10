@@ -2545,6 +2545,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09fb1ccd0aebb394b802ddcc490400c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _osuMiniGame: {fileID: 5675764035229836141, guid: 6515ae5107f982f44a2d33f617eb07e8, type: 3}
+  _rhythmMiniGame: {fileID: 2246977598735138848, guid: 52fadca760958184c8cc0e9519b0442f, type: 3}
 --- !u!4 &2009953107
 Transform:
   m_ObjectHideFlags: 0

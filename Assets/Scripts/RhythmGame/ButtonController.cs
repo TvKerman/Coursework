@@ -26,8 +26,7 @@ public class ButtonController : MonoBehaviour
         theSR = GetComponent<SpriteRenderer>();
     }
 
-    void Update()
-    {
+    public void ButtonLogic() {
         if (colliderController != null)
         {
             isActiveToPress = colliderController.IsActiveToPress;
@@ -41,7 +40,7 @@ public class ButtonController : MonoBehaviour
             theSR.sprite = pressedImage;
 
             // Дальше Бога нет
-            if (isActiveToPress && currentSquare.transform.position.x == -50 && Input.GetKeyDown("q")) 
+            if (isActiveToPress && currentSquare.transform.position.x == -50 && Input.GetKeyDown("q"))
             {
                 DestroySquare();
             }

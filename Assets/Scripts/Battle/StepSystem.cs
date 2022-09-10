@@ -87,7 +87,7 @@ namespace TurnBasedBattleSystemFromRomchik
             CurrentUnitIndex++;
         }
 
-        public void PlyerAttack(RaycastHit hit, MeleeEnemy isMeleeEnemyOnScene)
+        public void PlayerAttack(RaycastHit hit, MeleeEnemy isMeleeEnemyOnScene)
         {
             Unit unit = UnitInList.GetComponent<Unit>();
             int damage;
