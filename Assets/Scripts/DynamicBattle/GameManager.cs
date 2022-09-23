@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DynamicBattlePrototype
 {
@@ -18,7 +19,7 @@ namespace DynamicBattlePrototype
         private float _xLeftBoarder;
         private float _yDownBoarder;
 
-        private float _exp = 0.4f;
+        private float _exp = 0.1f;
 
         private int _currentRotationCamera = 0;
 
@@ -60,19 +61,27 @@ namespace DynamicBattlePrototype
             }
         }
 
-        void CameraControl() {
+        private void CameraControl() {
             if (_camera != null) {
                 CameraMove();
                 CameraRotation();
             }
         }
 
-        bool CameraInBoarder(Vector3 navigation) {
+        private void CameraMove()
+        {
+            CameraInputMoveKeyCode(KeyCode.W, 0);
+            CameraInputMoveKeyCode(KeyCode.D, 1);
+            CameraInputMoveKeyCode(KeyCode.S, 2);
+            CameraInputMoveKeyCode(KeyCode.A, 3);
+        }
+
+        private bool CameraInBoarder(Vector3 navigation) {
             Vector3 newPosition = _camera.transform.position + navigation;
             return newPosition.x > _xLeftBoarder && newPosition.x < _xRightBoarder && newPosition.z > _yDownBoarder && newPosition.z < _yUpBoarder;
         }
 
-        void CameraRotation() {
+        private void CameraRotation() {
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 _currentRotationCamera++;
@@ -89,14 +98,7 @@ namespace DynamicBattlePrototype
             }
         }
 
-        void CameraMove() {
-            CameraInputMoveKeyCode(KeyCode.W, 0);
-            CameraInputMoveKeyCode(KeyCode.D, 1);
-            CameraInputMoveKeyCode(KeyCode.S, 2);
-            CameraInputMoveKeyCode(KeyCode.A, 3);
-        }
-
-        void CameraInputMoveKeyCode(KeyCode Button, int direction) {
+        private void CameraInputMoveKeyCode(KeyCode Button, int direction) {
             if (Input.GetKey(Button) && CameraInBoarder(navigation[(direction + _currentRotationCamera) % 4] * Time.deltaTime * _cameraSpeed)) {
                 _camera.transform.position = _camera.transform.position + navigation[(direction + _currentRotationCamera) % 4] * Time.deltaTime * _cameraSpeed;
             }
@@ -104,29 +106,51 @@ namespace DynamicBattlePrototype
 
         IEnumerator AnimationRotationCamera(float start, float delta) {
             _isAnimationCamera = true;
-            float _currentDelta = delta;
+            float currentDelta = delta;
             float end = start + delta;
-            while (Mathf.Abs(_currentDelta) > _exp) {
-                _currentDelta -= delta * Time.deltaTime;
-                _camera.transform.localEulerAngles = new Vector3(_camera.transform.localEulerAngles.x, _camera.transform.localEulerAngles.y + delta * Time.deltaTime, _camera.transform.localEulerAngles.z);
+            while (Mathf.Abs(currentDelta) > Mathf.Abs(delta) * Time.deltaTime + _exp) {
+                currentDelta -= delta * Time.deltaTime;
+                DeltaRotateCamera(_camera, delta * Time.deltaTime);
                 foreach (var unit in _stepSystem.units) {
-                    unit.transform.root.GetComponentInChildren<Canvas>().transform.localEulerAngles = new Vector3(unit.transform.root.GetComponentInChildren<Canvas>().transform.localEulerAngles.x,
-                                                                                                                  _camera.transform.localEulerAngles.y,
-                                                                                                                  unit.transform.root.GetComponentInChildren<Canvas>().transform.localEulerAngles.z);
+                    DeltaRotateUI(unit, getEndLocalEulerAnglesUI(unit));
                 }
                 yield return null;
             }
+
             if (end < 0f) {
                 end += 360f;
             }
-            _camera.transform.localEulerAngles = new Vector3(_camera.transform.localEulerAngles.x, end % 360f, _camera.transform.localEulerAngles.z);
+
+            SetCameraRotation(_camera, GetEndRotation(_camera, end));
             foreach (var unit in _stepSystem.units)
             {
-                unit.transform.root.GetComponentInChildren<Canvas>().transform.localEulerAngles = new Vector3(unit.transform.root.GetComponentInChildren<Canvas>().transform.localEulerAngles.x,
-                                                                                                              _camera.transform.localEulerAngles.y,
-                                                                                                              unit.transform.root.GetComponentInChildren<Canvas>().transform.localEulerAngles.z);
+                DeltaRotateUI(unit, getEndLocalEulerAnglesUI(unit));
             }
+
             _isAnimationCamera = false;
+        }
+
+        private void DeltaRotateUI(Unit unit, Vector3 localEulerAngles) {
+            unit.transform.root.GetComponentInChildren<Slider>().transform.localEulerAngles = localEulerAngles;
+        }
+
+        private void DeltaRotateCamera(GameObject camera, float delta) {
+            camera.transform.localEulerAngles = new Vector3(camera.transform.localEulerAngles.x, 
+                                                            camera.transform.localEulerAngles.y + delta, 
+                                                            camera.transform.localEulerAngles.z);
+        }
+
+        private void SetCameraRotation(GameObject camera, Vector3 rotate) {
+            camera.transform.localEulerAngles = rotate;
+        }
+
+        private Vector3 GetEndRotation(GameObject camera, float end) {
+            return new Vector3(_camera.transform.localEulerAngles.x, end % 360f, _camera.transform.localEulerAngles.z);
+        }
+        private Vector3 getEndLocalEulerAnglesUI(Unit unit) { 
+        return new Vector3(unit.transform.root.GetComponentInChildren<Slider>().transform.localEulerAngles.x,
+                           _camera.transform.localEulerAngles.y,
+                           unit.transform.root.GetComponentInChildren<Slider>().transform.localEulerAngles.z);
         }
     }
 }

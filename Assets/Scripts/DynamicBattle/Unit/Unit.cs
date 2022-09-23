@@ -8,7 +8,8 @@ namespace DynamicBattlePrototype
 {
     public class Unit : MonoBehaviour, IComparable<Unit>
     {
-        [SerializeField] private Slider slider; 
+        [SerializeField] private Slider slider;
+        [SerializeField] private Animator _animator;
 
         public bool isSelected;
         public int x;
@@ -48,7 +49,8 @@ namespace DynamicBattlePrototype
             _isStopAnimationCoroutine = false;
             if (!IsEmptyPath && StartPath.x == x && StartPath.y == y)
                 _path.RemoveAt(_path.Count - 1);
-
+            if (_animator)
+                _animator.SetBool("Move", true);
             while (!IsEmptyPath)
             {
                 if (_currentDistance == 0)
@@ -69,6 +71,8 @@ namespace DynamicBattlePrototype
                 yield return StartCoroutine(this.AnimationMove());  
             }
             _isAnimation = false;
+            if (_animator)
+                _animator.SetBool("Move", false);
             _isStopAnimationCoroutine = true;
             stepSystem.isMove = false;
             stepSystem.gridBehavior.GetGridItem(this).GetComponent<GridStats>().SetIsOccupiedGridItem();

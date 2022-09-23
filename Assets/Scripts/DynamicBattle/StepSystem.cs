@@ -279,7 +279,9 @@ namespace DynamicBattlePrototype
                     _gridBehavior.GetGridItem(unit).GetComponent<GridStats>().SetIsFreeGridItem();
                     _gridBehavior.SetEndCoordinates(_gridBehavior.GetGridItem(unit).GetComponent<GridStats>());
                     _gridBehavior.FindPath();
-                    _gridBehavior.path.RemoveAt(0);
+                    if (_gridBehavior.path.Count != 0)
+                        _gridBehavior.path.RemoveAt(0);
+                    
                     int currentDistance = 0;
                     for (int index = 1; index <= _gridBehavior.path.Count; index++)
                     {
