@@ -1,18 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public Transform itemParents;
+    public GameObject inventoryUI;
+
+    Inventory inventory;
+
+    public InventorySlot[] slots;
+
+
     void Start()
     {
-        
+        inventory = Inventory.instance;
+        inventory.onItemChangedCallBack += UpdateUI;
     }
 
-    // Update is called once per frame
     void Update()
+    { 
+        //if (Input.GetButtonDown("Inventory"))
+        //{
+          //  inventoryUI.SetActive(!inventoryUI.activeSelf);
+           // UpdateUI();
+       // }
+    }
+
+    void UpdateUI()
     {
-        
+        InventorySlot[] slots = GetComponentsInChildren<InventorySlot>();
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (i < inventory.items.Count)
+            {
+                slots[i].AddItem(inventory.items[i]);
+            }
+            else
+            {
+                slots[i].ClearSlot();
+            }
+        }
     }
 }

@@ -15,8 +15,6 @@ public class PlayerMotor : MonoBehaviour
     private const float defSpeed = 3.5f;
     private const float defAngSpeed = 600f;
 
-    private bool isOnSwamp = false;
-
     public NavMeshAgent Agent { get { return agent; } }
 
     void Start()

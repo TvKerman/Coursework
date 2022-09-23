@@ -13,7 +13,7 @@ public class Scroller : MonoBehaviour, IMiniGameLogic
     [SerializeField] private ButtonController ButtonRed;
 
     private int _currentCount = 0;
-    private int _endMiniGame = 6;
+    private int _endMiniGame = 10;
 
     private bool isStarted = false;
 

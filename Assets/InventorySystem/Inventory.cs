@@ -1,4 +1,4 @@
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,29 +23,32 @@ public class Inventory : MonoBehaviour
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallBack;
 
-    private List<Item> inventory = new List<Item>();
-    private int maxSpace = 30;
+    public List<Item> items = new List<Item>();
+    private int maxSpace = 5;
 
-    public bool Add(Item newItem)
+    public void Add(Item newItem)
     {
-        if (inventory.Count <= maxSpace)
+        if (items.Count >= maxSpace)
         {
-            inventory.Add(newItem);
-            if (onItemChangedCallBack != null)
-            {
-                onItemChangedCallBack.Invoke();
-            } 
-            return true;
+            Debug.Log("Not enough room.");
+            return;
         }
-        else
+
+        items.Add(newItem);
+
+        if (onItemChangedCallBack != null)
         {
-            Debug.Log("Not enough space!");
-            return false;
+            onItemChangedCallBack.Invoke();
         }
     }
 
     public void Remove(Item itemToRemove)
     {
-        inventory.Remove(itemToRemove);
+        items.Remove(itemToRemove);
+
+        if (onItemChangedCallBack != null)
+        {
+            onItemChangedCallBack.Invoke();
+        }
     }
 }

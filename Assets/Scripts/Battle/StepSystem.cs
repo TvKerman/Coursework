@@ -22,22 +22,13 @@ namespace TurnBasedBattleSystemFromRomchik
 
         public bool isAnimationOn
         {
-            get
-            {
-                return _isAnimationOn;
-            }
-            set
-            {
-                _isAnimationOn = value;
-            }
+            get { return _isAnimationOn; }
+            set { _isAnimationOn = value; }
         }
 
         public int CurrentUnitIndex
         {
-            get
-            {
-                return _currentUnitIndex;
-            }
+            get { return _currentUnitIndex; }
             set
             {
                 _currentUnitIndex = value;
