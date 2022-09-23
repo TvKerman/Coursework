@@ -3,40 +3,71 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+
+[RequireComponent(typeof(PlayerMotor))]
 public class Movement : MonoBehaviour
 {
     private Camera mainCam;
-    private NavMeshAgent agent;
-
+    public LayerMask movementMask;
     private Vector3 hitPoint;
+    private PlayerMotor motor;
 
-    private bool isOnSwamp = false;
+    private Interactable focus;
+
     private bool isPause = false;
-
-    private const float slowSpeed = 1f;
-    private const float slowAngSpeed = 50f;
-    private const float defSpeed = 3.5f;
-    private const float defAngSpeed = 360f;
 
     void Start()
     {
         mainCam = Camera.main;
-        agent = GetComponent<NavMeshAgent>();
-        agent.speed = defSpeed;
+        motor = GetComponent<PlayerMotor>();
     }
 
     void Update()
     {
         if (Input.GetMouseButton(0))
         {
-            Debug.Log(isPause);
-            RaycastHit hit;
-            if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit) && !isPause)
+            if (focus != null)
             {
-                hitPoint = hit.point;
-                agent.SetDestination(hit.point); 
+                RemoveFocus();
+            }
+            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 100, movementMask) && !isPause)
+            {
+                Vector3 positionToMove = hit.point;
+                motor.MoveTo(positionToMove);
+                Interactable interactable = hit.transform.GetComponent<Interactable>();
+                if (interactable != null)
+                {
+                    SetFocus(interactable);
+                }
             }
         }
+    }
+
+    private void SetFocus(Interactable newFocus)
+    {
+        if (newFocus != null)
+        {
+            if (focus != null)
+            {
+                focus.OnDeFocused();
+            }
+
+            focus = newFocus;
+            motor.FollowTarget(newFocus.gameObject.transform);
+        }
+        newFocus.OnFocused(transform);
+    }
+
+    private void RemoveFocus()
+    {
+        if (focus != null)
+        {
+            focus.OnDeFocused();
+        }
+        focus = null;
+        motor.StopFollowingTarget();
     }
 
     public void PauseIsActive() {
@@ -55,24 +86,6 @@ public class Movement : MonoBehaviour
     public void SetMovementData(MovementData data)
     {
         transform.position = data.position;
-        agent.SetDestination(data.hitPoint);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Swamp"))
-        {
-            agent.speed = slowSpeed;
-            agent.angularSpeed = slowAngSpeed;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Swamp"))
-        {
-            agent.speed = defSpeed;
-            agent.angularSpeed = defAngSpeed;
-        }
+        motor.Agent.SetDestination(data.hitPoint);
     }
 }

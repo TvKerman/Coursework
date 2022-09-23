@@ -7,15 +7,21 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
 {
     [SerializeField] private GameObject _bigCircle;
     [SerializeField] private GameObject _smallCircle;
-    [SerializeField] private float _startSpawnRate = 0.01f;
+
+    [SerializeField] private float _startSpawnRate = 0f;
+
     [SerializeField] private Text _text;
+
     private int _score = 0;
     private int _currentCountCircles = 0;
-    private int _endMiniGame = 6;
+    private int _endMiniGame = 11;
+
     private float _randX;
     private float _randY;
+
     private float _spawnRate;
     private float _timer = 0f;
+
     Vector3 spawnCordinate;
     Vector3 spawnCordinate1;
 
@@ -48,19 +54,43 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
             spawnCordinate1 = new Vector3(_randX, _randY, 899f);
             bigCircle = Instantiate(_bigCircle, spawnCordinate, Quaternion.identity);
             smallCircle = Instantiate(_smallCircle, spawnCordinate1, Quaternion.identity);
-
             isFree = false;
         }
 
         if (!isFree && _timer > _spawnRate)
         {
-            bigCircle.transform.localScale = new Vector3(bigCircle.transform.localScale.x - 10,
-                                                      bigCircle.transform.localScale.y - 10,
+            bigCircle.transform.localScale = new Vector3(bigCircle.transform.localScale.x - 1,
+                                                      bigCircle.transform.localScale.y - 1,
                                                       bigCircle.transform.localScale.z);
-            _spawnRate += 0.3f;
-            if (bigCircle.transform.localScale.x <= 50)
+            _spawnRate += 0.01f;
+
+            if (bigCircle.transform.localScale.x <= smallCircle.transform.localScale.x)
             {
                 DestroyCircle(smallCircle, bigCircle);
+            }
+            if (!isFree)
+            {
+                if (-350f + Mathf.Abs(bigCircle.transform.position.x) < -150f && bigCircle.transform.position.x < 340)
+                {
+                    bigCircle.transform.Translate(Vector3.right * 4);
+                    smallCircle.transform.Translate(Vector3.right * 4);
+                }
+                else if (350f - Mathf.Abs(bigCircle.transform.position.x) < 150f && bigCircle.transform.position.x > -340)
+                {
+                    bigCircle.transform.Translate(Vector3.left * 4);
+                    smallCircle.transform.Translate(Vector3.left * 4);
+                }
+                
+                if (200f - Mathf.Abs(bigCircle.transform.position.y) < 150 && bigCircle.transform.position.y > -180)
+                {
+                    bigCircle.transform.Translate(Vector3.down * 4);
+                    smallCircle.transform.Translate(Vector3.down * 4);
+                }
+                else if (-200f + Mathf.Abs(bigCircle.transform.position.y) < -150 && bigCircle.transform.position.y > 180)
+                {
+                    bigCircle.transform.Translate(Vector3.up * 4);
+                    smallCircle.transform.Translate(Vector3.up * 4);
+                }
             }
         }
         else if (Input.GetMouseButtonDown(0) && !isFree)
@@ -69,6 +99,7 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
             if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit))
             {
                 Debug.Log(hit.collider.gameObject);
+
                 SmallCircle hitSmallCircle = hit.collider.gameObject.GetComponent<SmallCircle>();
                 BigCircle hitBigCircle = hit.collider.gameObject.GetComponent<BigCircle>();
                 BackGround hitBackGround = hit.collider.gameObject.GetComponent<BackGround>();
@@ -87,9 +118,16 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
                 else if (hitBackGround != null)
                 {
                     MinusScore(30);
+                    DestroyCircle(smallCircle, bigCircle);
+                    
                 }
             }
         }
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 
     public void InitMiniGame() {
@@ -124,5 +162,50 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
 
     public bool isEndMiniGame {
         get { return _currentCountCircles >= _endMiniGame; }
+    }
+
+
+    private void SlideLeft(GameObject big, GameObject small)
+    {
+        if (!isFree && _timer > _spawnRate)
+        {
+            big.transform.position = new Vector3(big.transform.position.x - 50f, big.transform.position.y, big.transform.position.x);
+            small.transform.position = new Vector3(big.transform.position.x - 50f, big.transform.position.y, big.transform.position.x);
+        }
+    }
+
+    private void SlideRight(GameObject big, GameObject small)
+    {
+        if (!isFree && _timer > _spawnRate)
+        {
+            big.transform.position = new Vector3(big.transform.position.x + 50f, big.transform.position.y, big.transform.position.x);
+            small.transform.position = new Vector3(big.transform.position.x + 50f, big.transform.position.y, big.transform.position.x);
+        }
+    }
+
+
+    private void SlideUp(GameObject big, GameObject small)
+    {
+        if (!isFree && _timer > _spawnRate)
+        {
+            big.transform.position = new Vector3(big.transform.position.x, big.transform.position.y + 50f, big.transform.position.x);
+            small.transform.position = new Vector3(big.transform.position.x, big.transform.position.y + 50f, big.transform.position.x);
+        }
+    }
+
+    private void SlideDown(GameObject big, GameObject small)
+    {
+        if (!isFree && _timer > _spawnRate)
+        {
+            big.transform.position = new Vector3(big.transform.position.x, big.transform.position.y - 50f, big.transform.position.x);
+            small.transform.position = new Vector3(big.transform.position.x, big.transform.position.y - 50f, big.transform.position.x);
+        }
+    }
+
+    private bool RandomSlide()
+    {
+        int randomValue = Random.Range(0, 1);
+
+        return randomValue == 0;
     }
 }

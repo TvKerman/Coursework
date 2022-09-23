@@ -52,11 +52,15 @@ namespace TurnBasedBattleSystemFromRomchik
             
             if (Input.GetMouseButtonDown(0) &&
                 _stepSystem.isAnimationOn is false &&
-                currentUnit is Friendly) {
+                currentUnit is Friendly)
+            {
 
                 bool isRaycastHit = false;
                 if (!_isActiveOsuMiniGame && !_isActiveRhythmMiniGame)
+                {
                     isRaycastHit = Physics.Raycast(_mainCam.ScreenPointToRay(Input.mousePosition), out hit);
+                }
+
                 if (currentUnit is RangeFriendly && !_isActiveOsuMiniGame && isRaycastHit) {
                     StartMiniGame(_osu, _osuGameLogic, ref _isActiveOsuMiniGame);
                     SetCameraInMiniGame();
@@ -123,11 +127,19 @@ namespace TurnBasedBattleSystemFromRomchik
         private void SetCameraInMiniGame() {
             _tempPosition = new Vector3(_mainCam.transform.position.x, _mainCam.transform.position.y, _mainCam.transform.position.z);
             _tempLocalEulerAngles = new Vector3(_mainCam.transform.localEulerAngles.x, _mainCam.transform.localEulerAngles.y, _mainCam.transform.localEulerAngles.z);
-            _mainCam.transform.position = new Vector3(0, 0, 0);
+            if (_isActiveOsuMiniGame)
+            {
+                _mainCam.transform.position = new Vector3(0, -16f, 400f);
+            }
+            else if (_isActiveRhythmMiniGame)
+            {
+                _mainCam.transform.position = new Vector3(0, -16f, 600f);
+            }
             _mainCam.transform.localEulerAngles = new Vector3(0, 0, 0);
         }
 
-        private void SetCameraInBattleScene() {
+        private void SetCameraInBattleScene() 
+        {
             _mainCam.transform.position = _tempPosition;
             _mainCam.transform.localEulerAngles = _tempLocalEulerAngles;
         }

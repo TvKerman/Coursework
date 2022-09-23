@@ -5,7 +5,7 @@ using System.Linq;
 
 public class Scroller : MonoBehaviour, IMiniGameLogic
 {
-    [SerializeField] private float tempo = 0.1f;
+    private float tempo = 1f;
     [SerializeField] private GameObject square;
 
     [SerializeField] private ButtonController ButtonBlue;
@@ -13,7 +13,7 @@ public class Scroller : MonoBehaviour, IMiniGameLogic
     [SerializeField] private ButtonController ButtonRed;
 
     private int _currentCount = 0;
-    private int _endMiniGame = 6;
+    private int _endMiniGame = 10;
 
     private bool isStarted = false;
 
