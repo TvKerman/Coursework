@@ -8,8 +8,6 @@ public class InventoryUI : MonoBehaviour
 
     Inventory inventory;
 
-    public InventorySlot[] slots;
-
 
     void Start()
     {

@@ -3,7 +3,10 @@ guid: c3184c2824606cb4ba6de2ce18028fa1
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - item: {instanceID: 0}
+  - SUKA: {fileID: 21300000, guid: 087b525cc09cc984399a3bacbc1ee437, type: 3}
+  - icon: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

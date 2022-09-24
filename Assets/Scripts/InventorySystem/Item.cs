@@ -5,6 +5,6 @@ using UnityEngine.UI;
 public class Item : ScriptableObject
 {
     new public string name = "New Item";
-    public Sprite icon;
+    public Sprite icon = null;
     public bool isDefItem = false;
 }
