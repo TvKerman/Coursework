@@ -9,6 +9,7 @@ namespace DynamicBattlePrototype
     {
         [SerializeField] private GameObject _camera;
         private StepSystem _stepSystem;
+        private Unit _DeadInside;
 
         private float _timeOut = 1f;
         private float _timer;
@@ -25,6 +26,7 @@ namespace DynamicBattlePrototype
 
         //private bool _isWait = false;
         private bool _isAnimationCamera = false;
+        private bool _isAnimationDead = false;
 
         private List<Vector3> navigation = new List<Vector3>() {new Vector3(0, 0, 1), 
                                                                 new Vector3(1, 0, 0), 
@@ -57,8 +59,15 @@ namespace DynamicBattlePrototype
                 }
                 if (_stepSystem.GetUnitCurrentStep().StopAnimationCoroutine && _stepSystem.IsAttackedUnit) {
                     _stepSystem.AnimationAttack();
+                    _stepSystem.GetUnitCurrentStep().AnimationAttackUnit();
+                    _isAnimationDead = _stepSystem.AttackedUnit.isAnimationDead;
+                    _DeadInside = _stepSystem.AttackedUnit;
+                }
+                if (_DeadInside != null && _DeadInside.isDeadUnit) {
+                    _stepSystem.DestroyUnit(_DeadInside);
                 }
             }
+
         }
 
         private void CameraControl() {
@@ -68,8 +77,7 @@ namespace DynamicBattlePrototype
             }
         }
 
-        private void CameraMove()
-        {
+        private void CameraMove() {
             CameraInputMoveKeyCode(KeyCode.W, 0);
             CameraInputMoveKeyCode(KeyCode.D, 1);
             CameraInputMoveKeyCode(KeyCode.S, 2);

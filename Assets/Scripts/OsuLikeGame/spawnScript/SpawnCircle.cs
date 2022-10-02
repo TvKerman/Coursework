@@ -19,6 +19,7 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
     private float _randX;
     private float _randY;
 
+    private float _speedMove = 4f;
     private float _spawnRate;
     private float _timer = 0f;
 
@@ -62,7 +63,7 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
             bigCircle.transform.localScale = new Vector3(bigCircle.transform.localScale.x - 1,
                                                       bigCircle.transform.localScale.y - 1,
                                                       bigCircle.transform.localScale.z);
-            _spawnRate += 0.01f;
+            _spawnRate += 0.05f;
 
             if (bigCircle.transform.localScale.x <= smallCircle.transform.localScale.x)
             {
@@ -72,24 +73,24 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
             {
                 if (-350f + Mathf.Abs(bigCircle.transform.position.x) < -150f && bigCircle.transform.position.x < 340)
                 {
-                    bigCircle.transform.Translate(Vector3.right * 4);
-                    smallCircle.transform.Translate(Vector3.right * 4);
+                    bigCircle.transform.Translate(Vector3.right * _speedMove);
+                    smallCircle.transform.Translate(Vector3.right * _speedMove);
                 }
                 else if (350f - Mathf.Abs(bigCircle.transform.position.x) < 150f && bigCircle.transform.position.x > -340)
                 {
-                    bigCircle.transform.Translate(Vector3.left * 4);
-                    smallCircle.transform.Translate(Vector3.left * 4);
+                    bigCircle.transform.Translate(Vector3.left * _speedMove);
+                    smallCircle.transform.Translate(Vector3.left * _speedMove);
                 }
                 
                 if (200f - Mathf.Abs(bigCircle.transform.position.y) < 150 && bigCircle.transform.position.y > -180)
                 {
-                    bigCircle.transform.Translate(Vector3.down * 4);
-                    smallCircle.transform.Translate(Vector3.down * 4);
+                    bigCircle.transform.Translate(Vector3.down * _speedMove);
+                    smallCircle.transform.Translate(Vector3.down * _speedMove);
                 }
                 else if (-200f + Mathf.Abs(bigCircle.transform.position.y) < -150 && bigCircle.transform.position.y > 180)
                 {
-                    bigCircle.transform.Translate(Vector3.up * 4);
-                    smallCircle.transform.Translate(Vector3.up * 4);
+                    bigCircle.transform.Translate(Vector3.up * _speedMove);
+                    smallCircle.transform.Translate(Vector3.up * _speedMove);
                 }
             }
         }
@@ -123,11 +124,6 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
                 }
             }
         }
-    }
-
-    private void FixedUpdate()
-    {
-        
     }
 
     public void InitMiniGame() {
@@ -165,42 +161,42 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
     }
 
 
-    private void SlideLeft(GameObject big, GameObject small)
-    {
-        if (!isFree && _timer > _spawnRate)
-        {
-            big.transform.position = new Vector3(big.transform.position.x - 50f, big.transform.position.y, big.transform.position.x);
-            small.transform.position = new Vector3(big.transform.position.x - 50f, big.transform.position.y, big.transform.position.x);
-        }
-    }
-
-    private void SlideRight(GameObject big, GameObject small)
-    {
-        if (!isFree && _timer > _spawnRate)
-        {
-            big.transform.position = new Vector3(big.transform.position.x + 50f, big.transform.position.y, big.transform.position.x);
-            small.transform.position = new Vector3(big.transform.position.x + 50f, big.transform.position.y, big.transform.position.x);
-        }
-    }
-
-
-    private void SlideUp(GameObject big, GameObject small)
-    {
-        if (!isFree && _timer > _spawnRate)
-        {
-            big.transform.position = new Vector3(big.transform.position.x, big.transform.position.y + 50f, big.transform.position.x);
-            small.transform.position = new Vector3(big.transform.position.x, big.transform.position.y + 50f, big.transform.position.x);
-        }
-    }
-
-    private void SlideDown(GameObject big, GameObject small)
-    {
-        if (!isFree && _timer > _spawnRate)
-        {
-            big.transform.position = new Vector3(big.transform.position.x, big.transform.position.y - 50f, big.transform.position.x);
-            small.transform.position = new Vector3(big.transform.position.x, big.transform.position.y - 50f, big.transform.position.x);
-        }
-    }
+    //private void SlideLeft(GameObject big, GameObject small)
+    //{
+    //    if (!isFree && _timer > _spawnRate)
+    //    {
+    //        big.transform.position = new Vector3(big.transform.position.x - 50f, big.transform.position.y, big.transform.position.x);
+    //        small.transform.position = new Vector3(big.transform.position.x - 50f, big.transform.position.y, big.transform.position.x);
+    //    }
+    //}
+    //
+    //private void SlideRight(GameObject big, GameObject small)
+    //{
+    //    if (!isFree && _timer > _spawnRate)
+    //    {
+    //        big.transform.position = new Vector3(big.transform.position.x + 50f, big.transform.position.y, big.transform.position.x);
+    //        small.transform.position = new Vector3(big.transform.position.x + 50f, big.transform.position.y, big.transform.position.x);
+    //    }
+    //}
+    //
+    //
+    //private void SlideUp(GameObject big, GameObject small)
+    //{
+    //    if (!isFree && _timer > _spawnRate)
+    //    {
+    //        big.transform.position = new Vector3(big.transform.position.x, big.transform.position.y + 50f, big.transform.position.x);
+    //        small.transform.position = new Vector3(big.transform.position.x, big.transform.position.y + 50f, big.transform.position.x);
+    //    }
+    //}
+    //
+    //private void SlideDown(GameObject big, GameObject small)
+    //{
+    //    if (!isFree && _timer > _spawnRate)
+    //    {
+    //        big.transform.position = new Vector3(big.transform.position.x, big.transform.position.y - 50f, big.transform.position.x);
+    //        small.transform.position = new Vector3(big.transform.position.x, big.transform.position.y - 50f, big.transform.position.x);
+    //    }
+    //}
 
     private bool RandomSlide()
     {

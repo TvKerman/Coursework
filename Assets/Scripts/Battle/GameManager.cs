@@ -35,6 +35,7 @@ namespace TurnBasedBattleSystemFromRomchik
             List<Unit> unitList = MakeListOfUnits();
             _stepSystem = new StepSystem(unitList);
             _mainCam = Camera.main;
+
             _osu = Instantiate(_osuMiniGame, new Vector3(0, 0, 0), Quaternion.identity);
             _rhythm = Instantiate(_rhythmMiniGame, new Vector3(0, 0, 0), Quaternion.identity);
             _osuGameLogic = _osu.GetComponentInChildren<SpawnCircle>();
@@ -103,14 +104,15 @@ namespace TurnBasedBattleSystemFromRomchik
 
         private void EnemyAttack() {
             Enemy attackingEnemy = _stepSystem.UnitInList as Enemy;
-            _stepSystem.EnemyAttack(attackingEnemy);
-            StartDeleyEnemy(attackingEnemy);
+            Unit friendly = _stepSystem.EnemyAttack(attackingEnemy);
+            StartDeleyEnemy(attackingEnemy, friendly);
         }
 
         private void PlayerAttack(Unit currentUnit) {
             MeleeEnemy isMeleeEnemyOnScene = FindObjectOfType<MeleeEnemy>();
             _stepSystem.PlayerAttack(hit, isMeleeEnemyOnScene);
-            StartDeleyFriendly(currentUnit);
+            Unit enemy = hit.collider.gameObject.GetComponent<Enemy>();
+            StartDeleyFriendly(currentUnit, enemy);
         }
 
         private void StartMiniGame(GameObject miniGame, IMiniGameLogic miniGameLogic, ref bool isStartMiniGame) {
@@ -144,7 +146,7 @@ namespace TurnBasedBattleSystemFromRomchik
             _mainCam.transform.localEulerAngles = _tempLocalEulerAngles;
         }
 
-        private void StartDeleyEnemy(Unit enemy) => StartCoroutine(_stepSystem.DeleyEnemy(enemy));
-        private void StartDeleyFriendly(Unit friendly) => StartCoroutine(_stepSystem.DeleyFriendly(friendly));
+        private void StartDeleyEnemy(Unit enemy, Unit friendly) => StartCoroutine(_stepSystem.DeleyEnemy(enemy, friendly));
+        private void StartDeleyFriendly(Unit friendly, Unit enemy) => StartCoroutine(_stepSystem.DeleyFriendly(friendly, enemy));
     }
 }

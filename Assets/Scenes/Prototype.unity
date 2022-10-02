@@ -691,10 +691,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3661912889248112469, guid: 48949de8085c1e348be3e63c22aa3776, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6668998579829482971, guid: 48949de8085c1e348be3e63c22aa3776, type: 3}
       propertyPath: m_RootOrder
       value: 2

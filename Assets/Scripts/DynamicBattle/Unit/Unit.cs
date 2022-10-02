@@ -24,6 +24,9 @@ namespace DynamicBattlePrototype
         public bool _isAnimation = false;
         public bool _isStopAnimationCoroutine = true;
         public bool _isStartCoroutine = false;
+        private bool _isAttackAnimation = false;
+        private bool _isDeadAnimation = false;
+        private bool _isDeadUnit = false;
         private bool _isPositiveDeltaX;
         private bool _isPositiveDeltaZ;
         private int _currentDistance;
@@ -177,6 +180,24 @@ namespace DynamicBattlePrototype
             _currentHealthPoint -= damage;
         }
 
+        public void AnimationKillUnit() {
+            _isDeadAnimation = true;
+            slider.gameObject.SetActive(false);
+            if (_animator != null)
+                _animator.SetBool("Dead", true);
+        }
+
+        public void AnimationAttackUnit() {
+            if (_animator != null)
+                _animator.SetBool("Attack", true);
+        }
+
+        public void AnimationHitUnit() {
+            if (_animator != null) {
+                _animator.SetBool("Hit", true);
+            }
+        }
+
         public void DeletePath()
         {
             _path.Clear();
@@ -188,6 +209,10 @@ namespace DynamicBattlePrototype
 
         public void UpdateSlider() {
             slider.value = ((float)_currentHealthPoint / healthPoint);
+        }
+
+        public Animator Animator {
+            get { return _animator; }
         }
 
         public bool IsAnimation {
@@ -215,6 +240,15 @@ namespace DynamicBattlePrototype
             get {
                 return _currentHealthPoint;
             }
+        }
+
+        public bool isDeadUnit {
+            get { return _isDeadUnit; }
+            set { _isDeadUnit = value; }
+        }
+
+        public bool isAnimationDead {
+            get { return _isDeadAnimation; }
         }
     }
 }

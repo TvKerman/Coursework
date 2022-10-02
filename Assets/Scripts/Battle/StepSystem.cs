@@ -98,7 +98,7 @@ namespace TurnBasedBattleSystemFromRomchik
             }
         }
 
-        public void EnemyAttack(Enemy enemyType)
+        public Unit EnemyAttack(Enemy enemyType)
         {
             int damage;
             damage = enemyType.damage;
@@ -120,35 +120,37 @@ namespace TurnBasedBattleSystemFromRomchik
             }
             friendlyToAttack.Damage(damage);
             NewTurn();
+            return friendlyToAttack;
         }
 
-        public IEnumerator DeleyFriendly(Unit friendly)
+        public IEnumerator DeleyFriendly(Unit friendly, Unit enemy)
         {
             _isAnimationOn = true;
             if (friendly != null)
             {
-                friendly.GetComponent<Renderer>().material.color = Color.red;
+                friendly.AnimationAttack();
             }
             yield return new WaitForSeconds(0.5f);
             if (friendly != null)
             {
-                friendly.GetComponent<Renderer>().material.color = Color.blue;
+                enemy.AnimationHit();
             }
             _isAnimationOn = false;
         }
 
-        public IEnumerator DeleyEnemy(Unit enemy)
+        public IEnumerator DeleyEnemy(Unit enemy, Unit friendly)
         {
             _isAnimationOn = true;
             if (enemy != null)
             {
-                enemy.GetComponent<Renderer>().material.color = Color.blue;
+                enemy.AnimationAttack();
             }
             yield return new WaitForSeconds(0.5f);
             if (enemy != null)
             {
-                enemy.GetComponent<Renderer>().material.color = Color.red;
+                friendly.AnimationHit();
             }
+            yield return new WaitForSeconds(0.5f);
             _isAnimationOn = false;
         }
     }

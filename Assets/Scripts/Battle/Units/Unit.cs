@@ -16,6 +16,7 @@ namespace TurnBasedBattleSystemFromRomchik
         public string type;
 
         [SerializeField] Slider healthBar;
+        [SerializeField] private Animator _animator;
         public StayPoint stayPoint;
 
         public void Initialize(StayPoint currentStayPoint)
@@ -34,23 +35,41 @@ namespace TurnBasedBattleSystemFromRomchik
             healthBar.value = health;
         }
 
-        void Start()
-        {
-        }
-
-        void Update()
-        {
-
-        }
-
         public void Damage(int damage)
         {
             health -= damage;
-            SetHealth(health);
+
             if (health <= 0)
             {
-                Destroy(gameObject);
+                healthBar.gameObject.SetActive(false);
+                AnimationDead();
             }
+            else 
+            {
+                SetHealth(health);
+            }
+        }
+
+        public void AnimationAttack() {
+            if (_animator != null) {
+                _animator.SetBool("Attack", true);
+            }
+        }
+
+        public void AnimationHit() {
+            if (_animator != null) {
+                _animator.SetBool("Hit", true);
+            }
+        }
+
+        public void AnimationDead() {
+            if (_animator != null) {
+                _animator.SetBool("Dead", true);
+            }
+        }
+
+        public void Dead() {
+            Destroy(gameObject);
         }
     }
 }
