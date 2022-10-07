@@ -65,6 +65,7 @@ namespace TurnBasedBattleSystemFromRomchik
         public void AnimationDead() {
             if (_animator != null) {
                 _animator.SetBool("Dead", true);
+                gameObject.tag = "Dead";
             }
         }
 

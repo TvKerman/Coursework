@@ -24,4 +24,9 @@ public class TestedGameManager : MonoBehaviour
             miniGameLogic.InitMiniGame();
         }
     }
+
+    private void FixedUpdate()
+    {
+        miniGameLogic.LogicOfPhysics();
+    }
 }

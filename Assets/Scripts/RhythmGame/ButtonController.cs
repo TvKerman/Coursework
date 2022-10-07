@@ -13,67 +13,71 @@ public class ButtonController : MonoBehaviour
 
     private bool isActiveToPress = false;
     private bool isExitCollider = false;
-
     private Scroller scroller;
-
-    private GameObject currentSquare;
 
     [SerializeField]private ColliderController colliderController;
 
+    private List<GameObject> temp;
+
     void Start()
     {
-        scroller = FindObjectOfType<Scroller>();
+        scroller = GetComponentInParent<Scroller>();
         theSR = GetComponent<SpriteRenderer>();
+        temp = new List<GameObject>();
     }
 
-    public void ButtonLogic() {
+    public int ButtonLogic() {
+        int score = 0;
+        bool input = Input.GetKeyDown(keyToPress);
+
+
         if (colliderController != null)
         {
             isActiveToPress = colliderController.IsActiveToPress;
             isExitCollider = colliderController.IsExitCollider;
         }
 
-        currentSquare = scroller.CurrentSquare;
-
-        if (Input.GetKeyDown(keyToPress))
+        if (input)
         {
             theSR.sprite = pressedImage;
-
-            // Дальше Бога нет
-            if (isActiveToPress && currentSquare.transform.position.x == -50 && Input.GetKeyDown("q"))
+            foreach (var currentSquare in scroller.TirgetButtons)
             {
-                DestroySquare();
+                if ((int)currentSquare.transform.position.x == (int)gameObject.transform.position.x)
+                {
+                    temp.Add(currentSquare);
+                    score += 30;
+                }
             }
-            else if (isActiveToPress && currentSquare.transform.position.x == 0 && Input.GetKeyDown("w"))
-            {
-                DestroySquare();
-            }
-            else if (isActiveToPress && currentSquare.transform.position.x == 50 && Input.GetKeyDown("e"))
-            {
-                DestroySquare();
-            }
-            //Дальше тоже
         }
+        if (input && temp.Count == 0) { 
+            score -= 30;
+        }
+
+        DestroySquare();
+
 
         if (Input.GetKeyUp(keyToPress))
         {
-            theSR.sprite = defImage;
+            SetDefaultButton();
         }
 
-        if (isExitCollider)
-        {
-            Destroy(currentSquare);
-            scroller.IsStarted = false;
-            colliderController.IsActiveToPress = false;
-            colliderController.IsExitCollider = false;
-        }
+        return score;
     }
 
+    public void SetDefaultButton() {
+        theSR.sprite = defImage;
+    }
 
     private void DestroySquare()
     {
-        Destroy(currentSquare);
-        scroller.IsStarted = false;
+        for (int index = temp.Count - 1; index > -1; index--)
+        {
+            scroller.Squares.Remove(temp[index]);
+            scroller.TirgetButtons.Remove(temp[index]);
+            GameObject tmp = temp[index];
+            temp.RemoveAt(index);
+            Destroy(tmp);
+        }
         colliderController.IsActiveToPress = false;
     }
 }

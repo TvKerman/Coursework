@@ -126,6 +126,10 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
         }
     }
 
+    public void LogicOfPhysics() {
+        
+    }
+
     public void InitMiniGame() {
         _currentCountCircles = 0;
         _score = 0;
@@ -160,7 +164,13 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
         get { return _currentCountCircles >= _endMiniGame; }
     }
 
+    public int MaxScore {
+        get { return (_endMiniGame - 1) * 30; }
+    }
 
+    public int GetScore {
+        get { return _score; }
+    }
     //private void SlideLeft(GameObject big, GameObject small)
     //{
     //    if (!isFree && _timer > _spawnRate)

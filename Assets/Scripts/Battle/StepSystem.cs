@@ -12,7 +12,7 @@ namespace TurnBasedBattleSystemFromRomchik
         private bool _isAnimationOn = false;
 
         private static int _currentUnitIndex = 0;
-
+        private float _bonusDamage = 0.1f;
 
         public StepSystem(List<Unit> _unitList)
         {
@@ -78,7 +78,7 @@ namespace TurnBasedBattleSystemFromRomchik
             CurrentUnitIndex++;
         }
 
-        public void PlayerAttack(RaycastHit hit, MeleeEnemy isMeleeEnemyOnScene)
+        public void PlayerAttack(RaycastHit hit, MeleeEnemy isMeleeEnemyOnScene, IMiniGameLogic miniGame)
         {
             Unit unit = UnitInList.GetComponent<Unit>();
             int damage;
@@ -91,8 +91,10 @@ namespace TurnBasedBattleSystemFromRomchik
                     unit is MeleeFriendly && enemy is MeleeEnemy ||
                     unit is MeleeFriendly && isMeleeEnemyOnScene == null)
                 {
-                    enemy.Damage(damage);
-                    Debug.Log(damage);
+                    //enemy.Damage(damage);
+                    //Debug.Log(damage);
+                    enemy.Damage(FormationOfTheFinalDamage(damage, miniGame.GetScore, miniGame.MaxScore));
+                    Debug.Log($"Damage: {FormationOfTheFinalDamage(damage, miniGame.GetScore, miniGame.MaxScore)}, Score: {miniGame.GetScore}, MaxScore: {miniGame.MaxScore}");
                     NewTurn();
                 }
             }
@@ -152,6 +154,14 @@ namespace TurnBasedBattleSystemFromRomchik
             }
             yield return new WaitForSeconds(0.5f);
             _isAnimationOn = false;
+        }
+
+        private int FormationOfTheFinalDamage(int basicDamage, int score, int MaxScore) {
+            if (Mathf.Abs(score) > Mathf.Abs(MaxScore)) {
+                score = MaxScore * (score / Mathf.Abs(score));
+            }
+
+            return (int)(basicDamage * (1f + (score / (float)MaxScore) * _bonusDamage));
         }
     }
 }

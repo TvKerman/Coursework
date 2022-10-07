@@ -16,6 +16,10 @@ namespace TurnBasedBattleSystemFromRomchik
 
         private Vector3 _tempPosition;
         private Vector3 _tempLocalEulerAngles;
+
+        private Vector3 _positionOSU = new Vector3(0, 0, 0);
+        private Vector3 _positionRhythm = new Vector3(0, 0, 900);
+
         private RaycastHit hit;
 
 
@@ -36,8 +40,8 @@ namespace TurnBasedBattleSystemFromRomchik
             _stepSystem = new StepSystem(unitList);
             _mainCam = Camera.main;
 
-            _osu = Instantiate(_osuMiniGame, new Vector3(0, 0, 0), Quaternion.identity);
-            _rhythm = Instantiate(_rhythmMiniGame, new Vector3(0, 0, 0), Quaternion.identity);
+            _osu = Instantiate(_osuMiniGame, _positionOSU, Quaternion.identity);
+            _rhythm = Instantiate(_rhythmMiniGame, _positionRhythm, Quaternion.identity);
             _osuGameLogic = _osu.GetComponentInChildren<SpawnCircle>();
             _rhythmGameLogic = _rhythm.GetComponent<Scroller>();
             _osu.SetActive(false);
@@ -61,6 +65,9 @@ namespace TurnBasedBattleSystemFromRomchik
                 {
                     isRaycastHit = Physics.Raycast(_mainCam.ScreenPointToRay(Input.mousePosition), out hit);
                 }
+                if (isRaycastHit && hit.collider.gameObject.tag != "Unit") {
+                    return;
+                }
 
                 if (currentUnit is RangeFriendly && !_isActiveOsuMiniGame && isRaycastHit) {
                     StartMiniGame(_osu, _osuGameLogic, ref _isActiveOsuMiniGame);
@@ -76,6 +83,16 @@ namespace TurnBasedBattleSystemFromRomchik
             else if (_stepSystem.isAnimationOn is false &&
                     _stepSystem.UnitInList is Enemy) {
                 EnemyAttack();
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            if (_isActiveOsuMiniGame) {
+                _osuGameLogic.LogicOfPhysics();
+            }
+            if (_isActiveRhythmMiniGame) {
+                _rhythmGameLogic.LogicOfPhysics();
             }
         }
 
@@ -97,7 +114,7 @@ namespace TurnBasedBattleSystemFromRomchik
                 if (miniGameLogic.isEndMiniGame) {
                     EndMiniGame(miniGame, ref isStartMiniGame);
                     SetCameraInBattleScene();
-                    PlayerAttack(currentUnit);
+                    PlayerAttack(currentUnit, miniGameLogic);
                 }
             }
         } 
@@ -108,9 +125,9 @@ namespace TurnBasedBattleSystemFromRomchik
             StartDeleyEnemy(attackingEnemy, friendly);
         }
 
-        private void PlayerAttack(Unit currentUnit) {
+        private void PlayerAttack(Unit currentUnit, IMiniGameLogic miniGame) {
             MeleeEnemy isMeleeEnemyOnScene = FindObjectOfType<MeleeEnemy>();
-            _stepSystem.PlayerAttack(hit, isMeleeEnemyOnScene);
+            _stepSystem.PlayerAttack(hit, isMeleeEnemyOnScene, miniGame);
             Unit enemy = hit.collider.gameObject.GetComponent<Enemy>();
             StartDeleyFriendly(currentUnit, enemy);
         }
