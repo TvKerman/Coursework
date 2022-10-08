@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: TestItem2
   m_EditorClassIdentifier: 
   name: gavno
-  icon: {fileID: 21300000, guid: 478191b90d9e86c41bce8b49bd13c31b, type: 3}
+  icon: {fileID: 21300000, guid: bfb6256c1f8c6ec4dbe0645b38d757c3, type: 3}
   isDefItem: 1

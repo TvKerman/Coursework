@@ -400,5 +400,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: OSUGame
       objectReference: {fileID: 0}
+    - target: {fileID: 5675764036587425239, guid: 6515ae5107f982f44a2d33f617eb07e8, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 798879c030015c645838c1250c689b76, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6515ae5107f982f44a2d33f617eb07e8, type: 3}
