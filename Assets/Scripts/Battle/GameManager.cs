@@ -50,6 +50,8 @@ namespace TurnBasedBattleSystemFromRomchik
 
         void Update()
         {
+            //EndBattle();
+
             Unit currentUnit = _stepSystem.UnitInList;
 
             FrameMiniGame(_osu, _osuGameLogic, ref _isActiveOsuMiniGame, currentUnit);
@@ -74,7 +76,7 @@ namespace TurnBasedBattleSystemFromRomchik
                     SetCameraInMiniGame();
                 }
 
-                if (currentUnit is MeleeFriendly && !_isActiveRhythmMiniGame && isRaycastHit) {
+                if (currentUnit is MeleeFriendly && !_isActiveRhythmMiniGame && (!_stepSystem.isMeleeUnitOnScene() || hit.collider.gameObject.GetComponent<MeleeEnemy>() != null)  &&  isRaycastHit) {
                     StartMiniGame(_rhythm, _rhythmGameLogic, ref _isActiveRhythmMiniGame);
                     SetCameraInMiniGame();
                 }
@@ -141,6 +143,11 @@ namespace TurnBasedBattleSystemFromRomchik
         private void EndMiniGame(GameObject miniGame, ref bool isStartMiniGame) {
             isStartMiniGame = false;
             miniGame.SetActive(isStartMiniGame);
+        }
+
+        private void EndBattle() {
+            bool PlayerWin = _stepSystem.PlayerWin();
+            bool PlayerLose = _stepSystem.PlayerLose();
         }
 
         private void SetCameraInMiniGame() {

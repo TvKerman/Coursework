@@ -44,11 +44,9 @@ public class Scroller : MonoBehaviour, IMiniGameLogic
         ClearDeleteButtons();
         SetScoreBoard();
 
-        if (_timer <= 0.0)
+        if (_timer <= 0.0 && !isStopSpawn)
         {
             _currentCount++;
-            if (isEndMiniGame)
-                return;
 
             GameObject currentSquare;
             SpawnPoint currentSpawnPoint = GetRandomPos(_spawnPointsList);
@@ -61,7 +59,7 @@ public class Scroller : MonoBehaviour, IMiniGameLogic
             _allSquares.Add(currentSquare);
             _timer = RandomTimeSpawn();
         }
-        else {
+        else if (!isStopSpawn) {
             _timer -= Time.deltaTime;
         }
 
@@ -84,7 +82,11 @@ public class Scroller : MonoBehaviour, IMiniGameLogic
         _currentCount = 0;
         _score = 0;
         SetScoreBoard();
-        _timer = RandomTimeSpawn();
+        _timer = 0.0;
+    }
+
+    private bool isStopSpawn {
+        get { return _currentCount >= _endMiniGame; }
     }
 
     public int currentCount {
@@ -93,7 +95,7 @@ public class Scroller : MonoBehaviour, IMiniGameLogic
     }
 
     public bool isEndMiniGame {
-        get { return _currentCount >= _endMiniGame; }
+        get { return _currentCount >= _endMiniGame && _allSquares.Count == 0; }
     }
 
     public int MaxScore {

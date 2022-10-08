@@ -19,7 +19,8 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
     private float _randX;
     private float _randY;
 
-    private float _speedMove = 4f;
+    private float _speedMove = 3f;
+    private float _speedTime = 1f;
     private float _spawnRate;
     private float _timer = 0f;
 
@@ -58,43 +59,8 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
             isFree = false;
         }
 
-        if (!isFree && _timer > _spawnRate)
-        {
-            bigCircle.transform.localScale = new Vector3(bigCircle.transform.localScale.x - 1,
-                                                      bigCircle.transform.localScale.y - 1,
-                                                      bigCircle.transform.localScale.z);
-            _spawnRate += 0.05f;
 
-            if (bigCircle.transform.localScale.x <= smallCircle.transform.localScale.x)
-            {
-                DestroyCircle(smallCircle, bigCircle);
-            }
-            if (!isFree)
-            {
-                if (-350f + Mathf.Abs(bigCircle.transform.position.x) < -150f && bigCircle.transform.position.x < 340)
-                {
-                    bigCircle.transform.Translate(Vector3.right * _speedMove);
-                    smallCircle.transform.Translate(Vector3.right * _speedMove);
-                }
-                else if (350f - Mathf.Abs(bigCircle.transform.position.x) < 150f && bigCircle.transform.position.x > -340)
-                {
-                    bigCircle.transform.Translate(Vector3.left * _speedMove);
-                    smallCircle.transform.Translate(Vector3.left * _speedMove);
-                }
-                
-                if (200f - Mathf.Abs(bigCircle.transform.position.y) < 150 && bigCircle.transform.position.y > -180)
-                {
-                    bigCircle.transform.Translate(Vector3.down * _speedMove);
-                    smallCircle.transform.Translate(Vector3.down * _speedMove);
-                }
-                else if (-200f + Mathf.Abs(bigCircle.transform.position.y) < -150 && bigCircle.transform.position.y > 180)
-                {
-                    bigCircle.transform.Translate(Vector3.up * _speedMove);
-                    smallCircle.transform.Translate(Vector3.up * _speedMove);
-                }
-            }
-        }
-        else if (Input.GetMouseButtonDown(0) && !isFree)
+        if (Input.GetMouseButtonDown(0) && !isFree)
         {
             RaycastHit hit;
             if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out hit))
@@ -127,7 +93,42 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
     }
 
     public void LogicOfPhysics() {
-        
+        if (!isFree)
+        {
+            bigCircle.transform.localScale = new Vector3(bigCircle.transform.localScale.x - _speedTime,
+                                                      bigCircle.transform.localScale.y - _speedTime,
+                                                      bigCircle.transform.localScale.z);
+            _spawnRate += 0.05f;
+
+            if (bigCircle.transform.localScale.x <= smallCircle.transform.localScale.x)
+            {
+                DestroyCircle(smallCircle, bigCircle);
+            }
+            if (!isFree)
+            {
+                if (-350f + Mathf.Abs(bigCircle.transform.position.x) < -150f && bigCircle.transform.position.x < 340)
+                {
+                    bigCircle.transform.Translate(Vector3.right * _speedMove);
+                    smallCircle.transform.Translate(Vector3.right * _speedMove);
+                }
+                else if (350f - Mathf.Abs(bigCircle.transform.position.x) < 150f && bigCircle.transform.position.x > -340)
+                {
+                    bigCircle.transform.Translate(Vector3.left * _speedMove);
+                    smallCircle.transform.Translate(Vector3.left * _speedMove);
+                }
+
+                if (200f - Mathf.Abs(bigCircle.transform.position.y) < 150 && bigCircle.transform.position.y > -180)
+                {
+                    bigCircle.transform.Translate(Vector3.down * _speedMove);
+                    smallCircle.transform.Translate(Vector3.down * _speedMove);
+                }
+                else if (-200f + Mathf.Abs(bigCircle.transform.position.y) < -150 && bigCircle.transform.position.y > 180)
+                {
+                    bigCircle.transform.Translate(Vector3.up * _speedMove);
+                    smallCircle.transform.Translate(Vector3.up * _speedMove);
+                }
+            }
+        }
     }
 
     public void InitMiniGame() {

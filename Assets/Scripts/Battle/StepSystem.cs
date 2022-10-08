@@ -13,7 +13,7 @@ namespace TurnBasedBattleSystemFromRomchik
 
         private static int _currentUnitIndex = 0;
         private float _bonusDamage = 0.1f;
-
+        private int _maxBonusDamage = 10;
         public StepSystem(List<Unit> _unitList)
         {
             unitList = _unitList;
@@ -91,10 +91,7 @@ namespace TurnBasedBattleSystemFromRomchik
                     unit is MeleeFriendly && enemy is MeleeEnemy ||
                     unit is MeleeFriendly && isMeleeEnemyOnScene == null)
                 {
-                    //enemy.Damage(damage);
-                    //Debug.Log(damage);
-                    enemy.Damage(FormationOfTheFinalDamage(damage, miniGame.GetScore, miniGame.MaxScore));
-                    Debug.Log($"Damage: {FormationOfTheFinalDamage(damage, miniGame.GetScore, miniGame.MaxScore)}, Score: {miniGame.GetScore}, MaxScore: {miniGame.MaxScore}");
+                    enemy.Damage(FormationOfTheFinalDamage(damage, _maxBonusDamage ,miniGame.GetScore, miniGame.MaxScore));
                     NewTurn();
                 }
             }
@@ -156,12 +153,57 @@ namespace TurnBasedBattleSystemFromRomchik
             _isAnimationOn = false;
         }
 
-        private int FormationOfTheFinalDamage(int basicDamage, int score, int MaxScore) {
-            if (Mathf.Abs(score) > Mathf.Abs(MaxScore)) {
+        public bool isMeleeUnitOnScene() {
+            foreach (var unit in unitList) {
+                if (unit is MeleeEnemy) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool PlayerWin() {
+            foreach (var unit in unitList) {
+                if (unit is Enemy) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool PlayerLose()
+        {
+            foreach (var unit in unitList)
+            {
+                if (unit is Friendly)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private int FormationOfTheFinalDamage(int basicDamage, int score, int MaxScore)
+        {
+            if (Mathf.Abs(score) > Mathf.Abs(MaxScore))
+            {
                 score = MaxScore * (score / Mathf.Abs(score));
             }
 
             return (int)(basicDamage * (1f + (score / (float)MaxScore) * _bonusDamage));
+        }
+
+        private int FormationOfTheFinalDamage(int basicDamage, int MaxDamageBonus, int score, int MaxScore)
+        {
+            if (Mathf.Abs(score) > Mathf.Abs(MaxScore))
+            {
+                score = MaxScore * (score / Mathf.Abs(score));
+            }
+
+            return (int)(basicDamage + (score / (float)MaxScore) * MaxDamageBonus);
         }
     }
 }

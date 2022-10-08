@@ -65,7 +65,10 @@ public class ButtonController : MonoBehaviour
     }
 
     public void SetDefaultButton() {
-        theSR.sprite = defImage;
+        if (theSR != null && defImage != null)
+        {
+            theSR.sprite = defImage;
+        }
     }
 
     private void DestroySquare()
