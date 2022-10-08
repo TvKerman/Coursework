@@ -1,60 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
+//[RequireComponent(typeof())]
 public class Interactable : MonoBehaviour
 {
-    private Transform interactionTransform;
-    public Transform player;
-
     private float radius = 3f;
+    public Transform interactableObject;
 
-    private bool isFocused = false;
-    private bool isInteracted = false;
-    
+    public bool isFocus = false;
+    Transform player;
 
-    private void Start()
+    bool hasInteracted = false;
+
+    void Update()
     {
-        interactionTransform = GetComponent<Transform>();
-    }
-
-    private void Update()
-    {
-        if (isFocused)
+        if (isFocus)
         {
-           float distance = Vector3.Distance(player.position, interactionTransform.position);
-           if (isInteracted && distance <= 1f)
-           {
-               isInteracted = false;
-               Interact();
-           }
+            float distance = Vector3.Distance(player.position, interactableObject.position);
+
+            if (!hasInteracted && distance <= radius)
+            {
+                hasInteracted = true;
+                Interact();
+            }
         }
     }
 
-    public virtual void Interact() {}
-
     public void OnFocused(Transform playerTransform)
     {
-        isFocused = true;
-        isInteracted = true;
+        isFocus = true;
+        hasInteracted = false;
         player = playerTransform;
     }
 
     public void OnDeFocused()
     {
-        isFocused = false; 
-        player = null;  
-        isInteracted = false;
+        isFocus = false;
+        hasInteracted = true;
+        player = null;
+    }
+
+    public virtual void Interact()
+    {
+
     }
 
     private void OnDrawGizmosSelected()
     {
-        if (interactionTransform == null)
-        {
-            interactionTransform = transform;
-        }
-
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, radius);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(interactableObject.transform.position, radius);
     }
 }

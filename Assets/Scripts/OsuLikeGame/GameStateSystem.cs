@@ -16,9 +16,9 @@ public class GameStateSystem : MonoBehaviour
         _saveSystem = new JSONSaveSystem();
         _movement = FindObjectOfType<Movement>();
 
-        savePanel.SaveRequested += OnSaveRequested;
-        savePanel.LoadRequested += OnLoadRequested;
-        savePanel.SetSaver(_saveSystem);
+ //       savePanel.SaveRequested += OnSaveRequested;
+ //       savePanel.LoadRequested += OnLoadRequested;
+ //       savePanel.SetSaver(_saveSystem);
     }
 
     private SaveData GetSaveData()

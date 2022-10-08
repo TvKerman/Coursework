@@ -62,7 +62,7 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
             bigCircle.transform.localScale = new Vector3(bigCircle.transform.localScale.x - 1,
                                                       bigCircle.transform.localScale.y - 1,
                                                       bigCircle.transform.localScale.z);
-            _spawnRate += 0.01f;
+            _spawnRate += 0.03f;
 
             if (bigCircle.transform.localScale.x <= smallCircle.transform.localScale.x)
             {

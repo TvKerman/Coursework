@@ -1,53 +1,57 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    #region Prikol
+    #region SingleTon
 
     public static Inventory instance;
 
     private void Awake()
     {
-        if (instance != null)
-        {
-            Debug.Log("More then one inventory instance");
-            return;
-        }
-        instance = this;
+        instance = this;   
     }
 
     #endregion
 
     public delegate void OnItemChanged();
-    public OnItemChanged onItemChangedCallBack;
+    public OnItemChanged onItemChangerdCallBack;
+
+    public int maxSpace = 10;
+
 
     public List<Item> items = new List<Item>();
-    private int maxSpace = 5;
 
-    public void Add(Item newItem)
+    public void Add(Item item)
     {
-        if (items.Count >= maxSpace)
+        if (item.ShowInInventory)
         {
-            Debug.Log("Not enough room.");
-            return;
-        }
+            if (items.Count >= maxSpace)
+            {
+                Debug.Log("sosi zalupu");
+                return;
+            }
 
-        items.Add(newItem);
+            items.Add(item);
 
-        if (onItemChangedCallBack != null)
-        {
-            onItemChangedCallBack.Invoke();
+            if (onItemChangerdCallBack != null)
+            {
+                onItemChangerdCallBack.Invoke();
+            }
         }
     }
 
-    public void Remove(Item itemToRemove)
+    public void Remove(Item item)
     {
-        items.Remove(itemToRemove);
-
-        if (onItemChangedCallBack != null)
+        if (item != null)
         {
-            onItemChangedCallBack.Invoke();
+            items.Remove(item);
         }
+
+        if (onItemChangerdCallBack != null)
+        {
+            onItemChangerdCallBack.Invoke();
+        } 
     }
 }
