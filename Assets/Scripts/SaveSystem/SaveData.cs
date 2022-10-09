@@ -5,16 +5,16 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    public MovementData movementData;
+    public PlayerMovementData movementData;
 
     public SaveInfo Info;
 }
 
 [Serializable]
-public class MovementData
+public class PlayerMovementData
 {
     public Vector3 position;
-    public Vector3 hitPoint;
+    public bool isPlayerCanMove;
 }
 
 [Serializable]
