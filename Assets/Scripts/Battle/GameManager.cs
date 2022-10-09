@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace TurnBasedBattleSystemFromRomchik
 {
@@ -13,6 +14,8 @@ namespace TurnBasedBattleSystemFromRomchik
 
         [SerializeField] private GameObject _osuMiniGame;
         [SerializeField] private GameObject _rhythmMiniGame;
+        
+        private UICurrentTurn _UIturn;
 
         private Vector3 _tempPosition;
         private Vector3 _tempLocalEulerAngles;
@@ -31,7 +34,7 @@ namespace TurnBasedBattleSystemFromRomchik
 
         private bool _isActiveOsuMiniGame = false;
         private bool _isActiveRhythmMiniGame = false;
-
+        private bool _isButtleOver = false;
 
 
         private void Start()
@@ -46,18 +49,26 @@ namespace TurnBasedBattleSystemFromRomchik
             _rhythmGameLogic = _rhythm.GetComponent<Scroller>();
             _osu.SetActive(false);
             _rhythm.SetActive(false);
+
+            _UIturn = FindObjectOfType<UICurrentTurn>();
         }
 
         void Update()
         {
-            //EndBattle();
+            if (!_isButtleOver)
+            {
+                EndBattle();
+            }
+            else if (Input.GetKey(KeyCode.Return)) {
+                Application.Quit();
+            }
 
             Unit currentUnit = _stepSystem.UnitInList;
 
             FrameMiniGame(_osu, _osuGameLogic, ref _isActiveOsuMiniGame, currentUnit);
             FrameMiniGame(_rhythm, _rhythmGameLogic, ref _isActiveRhythmMiniGame, currentUnit);
             
-            if (Input.GetMouseButtonDown(0) &&
+            if (Input.GetMouseButtonDown(0) && !_isButtleOver &&
                 _stepSystem.isAnimationOn is false &&
                 currentUnit is Friendly)
             {
@@ -82,7 +93,7 @@ namespace TurnBasedBattleSystemFromRomchik
                 }
 
             }
-            else if (_stepSystem.isAnimationOn is false &&
+            else if (_stepSystem.isAnimationOn is false && !_isButtleOver &&
                     _stepSystem.UnitInList is Enemy) {
                 EnemyAttack();
             }
@@ -148,6 +159,19 @@ namespace TurnBasedBattleSystemFromRomchik
         private void EndBattle() {
             bool PlayerWin = _stepSystem.PlayerWin();
             bool PlayerLose = _stepSystem.PlayerLose();
+            if (!PlayerLose && !PlayerWin && _stepSystem.UnitInList is Enemy && !_UIturn.EnemyTurn) {
+                _UIturn.SetEnemyTurn();
+            } else if (!PlayerLose && !PlayerWin && _stepSystem.UnitInList is Friendly && !_UIturn.PlayerTurn) {
+                _UIturn.SetPlayerTurn();
+            }
+
+            if (PlayerWin && !_UIturn.PlayerWin)
+            {
+                _UIturn.SetPlayerWin();
+            }
+            else if (PlayerLose && !_UIturn.PlayerLose) {
+                _UIturn.SetPlayerLose();
+            }
         }
 
         private void SetCameraInMiniGame() {

@@ -17,6 +17,18 @@ public class PlayerMovementData
     public bool isPlayerCanMove;
 }
 
+
+public class NPCData 
+{
+    public Vector3 position;
+
+    public bool isActive;
+    public bool isPlayerInTrigger;
+    public bool isGetMessage;
+    public bool isStartBattle;
+    public bool isButtonCloseDialog;
+}
+
 [Serializable]
 public class SaveInfo
 {
