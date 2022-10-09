@@ -15,7 +15,7 @@ public class MenuPause : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Escape)) {
 
-            FindObjectOfType<Movement>().PauseIsOver();
+            //FindObjectOfType<Movement>().PauseIsOver();
             gameObject.SetActive(false);
         }
     }
