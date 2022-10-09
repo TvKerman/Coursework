@@ -81,14 +81,14 @@ public class Movement : MonoBehaviour
         isPause = false;
     }
 
-    public MovementData GetMovementData()
-    {
-        return new MovementData() {position = transform.position, hitPoint = hitPoint};
-    }
+    //public MovementData GetMovementData()
+    //{
+    //    return new MovementData() {position = transform.position, hitPoint = hitPoint};
+    //}
 
-    public void SetMovementData(MovementData data)
-    {
-        transform.position = data.position;
-        motor.Agent.SetDestination(data.hitPoint);
-    }
+    //public void SetMovementData(MovementData data)
+    //{
+    //    transform.position = data.position;
+    //    motor.Agent.SetDestination(data.hitPoint);
+    //}
 }
