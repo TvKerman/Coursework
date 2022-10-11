@@ -5,16 +5,28 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    public MovementData movementData;
+    public PlayerMovementData movementData;
 
     public SaveInfo Info;
 }
 
 [Serializable]
-public class MovementData
+public class PlayerMovementData
 {
     public Vector3 position;
-    public Vector3 hitPoint;
+    public bool isPlayerCanMove;
+}
+
+
+public class NPCData 
+{
+    public Vector3 position;
+
+    public bool isActive;
+    public bool isPlayerInTrigger;
+    public bool isGetMessage;
+    public bool isStartBattle;
+    public bool isButtonCloseDialog;
 }
 
 [Serializable]

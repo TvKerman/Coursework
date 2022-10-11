@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - OSU
+  - Button
+  - PressZone
+  - Unit
+  - Dead
+  - FriendUnit
+  - Tirget Button
   layers:
   - Default
   - TransparentFX

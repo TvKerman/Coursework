@@ -6,7 +6,7 @@ using System;
 public class GameStateSystem : MonoBehaviour
 {
     private ISaveSystem _saveSystem;
-    private Movement _movement;
+    //private Movement _movement;
 
     [SerializeField] private SavePanel savePanel;
     [SerializeField] private GameObject menuPause;
@@ -14,7 +14,7 @@ public class GameStateSystem : MonoBehaviour
     void Start()
     {
         _saveSystem = new JSONSaveSystem();
-        _movement = FindObjectOfType<Movement>();
+        //_movement = FindObjectOfType<Movement>();
 
  //       savePanel.SaveRequested += OnSaveRequested;
  //       savePanel.LoadRequested += OnLoadRequested;
@@ -24,14 +24,14 @@ public class GameStateSystem : MonoBehaviour
     private SaveData GetSaveData()
     {
         SaveData data = new SaveData();
-        data.movementData = _movement.GetMovementData();
+        //data.movementData = _movement.GetMovementData();
 
         return data;
     }
 
     private void SetSaveData(SaveData data)
     {
-        _movement.SetMovementData(data.movementData);
+        //_movement.SetMovementData(data.movementData);
     }
 
     public void AutoSave()
@@ -44,7 +44,7 @@ public class GameStateSystem : MonoBehaviour
     public void LoadAutoSave()
     {
         menuPause.SetActive(false);
-        FindObjectOfType<Movement>().PauseIsOver();
+        //FindObjectOfType<Movement>().PauseIsOver();
         SetSaveData(_saveSystem.Load(true));
     }
 

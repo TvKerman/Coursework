@@ -4,13 +4,4 @@ using UnityEngine;
 using TurnBasedBattleSystemFromRomchik;
 public class Friendly : Unit
 {
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
 }

@@ -6,10 +6,10 @@ public class Collor : MonoBehaviour
 {
     private void OnMouseEnter()
     {
-        GetComponent<Renderer>().material.color = Color.green;
+        //GetComponent<Renderer>().material.color = Color.green;
     }
     private void OnMouseExit()
     {
-        GetComponent<Renderer>().material.color = Color.red;
+        //GetComponent<Renderer>().material.color = Color.red;
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace TurnBasedBattleSystemFromRomchik
 {
@@ -13,9 +14,15 @@ namespace TurnBasedBattleSystemFromRomchik
 
         [SerializeField] private GameObject _osuMiniGame;
         [SerializeField] private GameObject _rhythmMiniGame;
+        
+        private UICurrentTurn _UIturn;
 
         private Vector3 _tempPosition;
         private Vector3 _tempLocalEulerAngles;
+
+        private Vector3 _positionOSU = new Vector3(0, 0, 0);
+        private Vector3 _positionRhythm = new Vector3(0, 0, 900);
+
         private RaycastHit hit;
 
 
@@ -27,7 +34,7 @@ namespace TurnBasedBattleSystemFromRomchik
 
         private bool _isActiveOsuMiniGame = false;
         private bool _isActiveRhythmMiniGame = false;
-
+        private bool _isButtleOver = false;
 
 
         private void Start()
@@ -35,22 +42,33 @@ namespace TurnBasedBattleSystemFromRomchik
             List<Unit> unitList = MakeListOfUnits();
             _stepSystem = new StepSystem(unitList);
             _mainCam = Camera.main;
-            _osu = Instantiate(_osuMiniGame, new Vector3(0, 0, 0), Quaternion.identity);
-            _rhythm = Instantiate(_rhythmMiniGame, new Vector3(0, 0, 0), Quaternion.identity);
+
+            _osu = Instantiate(_osuMiniGame, _positionOSU, Quaternion.identity);
+            _rhythm = Instantiate(_rhythmMiniGame, _positionRhythm, Quaternion.identity);
             _osuGameLogic = _osu.GetComponentInChildren<SpawnCircle>();
             _rhythmGameLogic = _rhythm.GetComponent<Scroller>();
             _osu.SetActive(false);
             _rhythm.SetActive(false);
+
+            _UIturn = FindObjectOfType<UICurrentTurn>();
         }
 
         void Update()
         {
+            if (!_isButtleOver)
+            {
+                EndBattle();
+            }
+            else if (Input.GetKey(KeyCode.Return)) {
+                Application.Quit();
+            }
+
             Unit currentUnit = _stepSystem.UnitInList;
 
             FrameMiniGame(_osu, _osuGameLogic, ref _isActiveOsuMiniGame, currentUnit);
             FrameMiniGame(_rhythm, _rhythmGameLogic, ref _isActiveRhythmMiniGame, currentUnit);
             
-            if (Input.GetMouseButtonDown(0) &&
+            if (Input.GetMouseButtonDown(0) && !_isButtleOver &&
                 _stepSystem.isAnimationOn is false &&
                 currentUnit is Friendly)
             {
@@ -60,21 +78,34 @@ namespace TurnBasedBattleSystemFromRomchik
                 {
                     isRaycastHit = Physics.Raycast(_mainCam.ScreenPointToRay(Input.mousePosition), out hit);
                 }
+                if (isRaycastHit && hit.collider.gameObject.tag != "Unit") {
+                    return;
+                }
 
                 if (currentUnit is RangeFriendly && !_isActiveOsuMiniGame && isRaycastHit) {
                     StartMiniGame(_osu, _osuGameLogic, ref _isActiveOsuMiniGame);
                     SetCameraInMiniGame();
                 }
 
-                if (currentUnit is MeleeFriendly && !_isActiveRhythmMiniGame && isRaycastHit) {
+                if (currentUnit is MeleeFriendly && !_isActiveRhythmMiniGame && (!_stepSystem.isMeleeUnitOnScene() || hit.collider.gameObject.GetComponent<MeleeEnemy>() != null)  &&  isRaycastHit) {
                     StartMiniGame(_rhythm, _rhythmGameLogic, ref _isActiveRhythmMiniGame);
                     SetCameraInMiniGame();
                 }
 
             }
-            else if (_stepSystem.isAnimationOn is false &&
+            else if (_stepSystem.isAnimationOn is false && !_isButtleOver &&
                     _stepSystem.UnitInList is Enemy) {
                 EnemyAttack();
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            if (_isActiveOsuMiniGame) {
+                _osuGameLogic.LogicOfPhysics();
+            }
+            if (_isActiveRhythmMiniGame) {
+                _rhythmGameLogic.LogicOfPhysics();
             }
         }
 
@@ -96,32 +127,55 @@ namespace TurnBasedBattleSystemFromRomchik
                 if (miniGameLogic.isEndMiniGame) {
                     EndMiniGame(miniGame, ref isStartMiniGame);
                     SetCameraInBattleScene();
-                    PlayerAttack(currentUnit);
+                    PlayerAttack(currentUnit, miniGameLogic);
                 }
             }
         } 
 
         private void EnemyAttack() {
             Enemy attackingEnemy = _stepSystem.UnitInList as Enemy;
-            _stepSystem.EnemyAttack(attackingEnemy);
-            StartDeleyEnemy(attackingEnemy);
+            Unit friendly = _stepSystem.EnemyAttack(attackingEnemy);
+            StartDeleyEnemy(attackingEnemy, friendly);
         }
 
-        private void PlayerAttack(Unit currentUnit) {
+        private void PlayerAttack(Unit currentUnit, IMiniGameLogic miniGame) {
             MeleeEnemy isMeleeEnemyOnScene = FindObjectOfType<MeleeEnemy>();
-            _stepSystem.PlayerAttack(hit, isMeleeEnemyOnScene);
-            StartDeleyFriendly(currentUnit);
+            _stepSystem.PlayerAttack(hit, isMeleeEnemyOnScene, miniGame);
+            Unit enemy = hit.collider.gameObject.GetComponent<Enemy>();
+            StartDeleyFriendly(currentUnit, enemy);
         }
 
         private void StartMiniGame(GameObject miniGame, IMiniGameLogic miniGameLogic, ref bool isStartMiniGame) {
             isStartMiniGame = true;
             miniGame.SetActive(isStartMiniGame);
             miniGameLogic.InitMiniGame();
+            HideUserInterface();
         }
 
         private void EndMiniGame(GameObject miniGame, ref bool isStartMiniGame) {
             isStartMiniGame = false;
             miniGame.SetActive(isStartMiniGame);
+            ShowUserInterface();
+        }
+
+        private void EndBattle() {
+            bool PlayerWin = _stepSystem.PlayerWin();
+            bool PlayerLose = _stepSystem.PlayerLose();
+            if (!PlayerLose && !PlayerWin && _stepSystem.UnitInList is Enemy && !_UIturn.EnemyTurn) {
+                _UIturn.SetEnemyTurn();
+            } else if (!PlayerLose && !PlayerWin && _stepSystem.UnitInList is Friendly && !_UIturn.PlayerTurn) {
+                _UIturn.SetPlayerTurn();
+            }
+
+            if (PlayerWin && !_UIturn.PlayerWin)
+            {
+                _UIturn.SetPlayerWin();
+                _isButtleOver = true;
+            }
+            else if (PlayerLose && !_UIturn.PlayerLose) {
+                _UIturn.SetPlayerLose();
+                _isButtleOver = true;
+            }
         }
 
         private void SetCameraInMiniGame() {
@@ -144,7 +198,17 @@ namespace TurnBasedBattleSystemFromRomchik
             _mainCam.transform.localEulerAngles = _tempLocalEulerAngles;
         }
 
-        private void StartDeleyEnemy(Unit enemy) => StartCoroutine(_stepSystem.DeleyEnemy(enemy));
-        private void StartDeleyFriendly(Unit friendly) => StartCoroutine(_stepSystem.DeleyFriendly(friendly));
+        private void HideUserInterface() {
+            _UIturn.gameObject.SetActive(false);
+            _stepSystem.HideUnitIcons();
+        }
+
+        private void ShowUserInterface() {
+            _UIturn.gameObject.SetActive(true);
+            _stepSystem.ShowUnitIcons();
+        }
+
+        private void StartDeleyEnemy(Unit enemy, Unit friendly) => StartCoroutine(_stepSystem.DeleyEnemy(enemy, friendly));
+        private void StartDeleyFriendly(Unit friendly, Unit enemy) => StartCoroutine(_stepSystem.DeleyFriendly(friendly, enemy));
     }
 }

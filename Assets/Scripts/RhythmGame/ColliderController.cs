@@ -7,6 +7,14 @@ public class ColliderController : MonoBehaviour
 
     private bool isActriveToPress = false;
     private bool isExitCollider = false;
+
+    private Scroller _scroller;
+
+    private void Start()
+    {
+        _scroller = FindObjectOfType<Scroller>();
+    }
+
     public bool IsActiveToPress
     {
         get
@@ -30,14 +38,17 @@ public class ColliderController : MonoBehaviour
         {
             isActriveToPress = true;
             isExitCollider = false;
+            other.tag = "Tirget Button";
+            _scroller.TirgetButtons.Add(other.gameObject);
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Button")
+        if (other.tag == "Tirget Button")
         {
             isActriveToPress = true;
             isExitCollider = true;
+            _scroller.DeleteButtons.Add(other.gameObject);
         }
     }
 }

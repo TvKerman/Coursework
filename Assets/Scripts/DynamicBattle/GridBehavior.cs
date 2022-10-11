@@ -32,7 +32,6 @@ public class GridBehavior : MonoBehaviour
 
     void GenerateGrid()
     {
-
         for (int i = 0; i < columns; i++)
         {
             for (int j = 0; j < rows; j++)
@@ -327,6 +326,37 @@ public class GridBehavior : MonoBehaviour
                 item.SelectInRangedAttack();
             }
         }
+    }
+    
+    public void FindPathBeforeGridItem(DynamicBattlePrototype.Unit unit, GridStats item) {
+        GetGridItem(unit).GetComponent<GridStats>().SetIsFreeGridItem();
+
+        SetStartCoordinates(unit);
+        SetEndCoordinates(item);
+
+        FindPath();
+
+        unit.SetPath(path);
+        unit.SelectPath();
+
+        ClearPath();
+        GetGridItem(unit).GetComponent<GridStats>().SetIsOccupiedGridItem();
+    }
+
+    public void FindPathToAttack(DynamicBattlePrototype.Unit unit, GridStats enemyGridItem) {
+        unit.DeselectPath();
+        unit.DeletePath();
+
+        GetGridItem(unit).GetComponent<GridStats>().SetIsFreeGridItem();
+        SetStartCoordinates(unit);
+
+        enemyGridItem.SetIsFreeGridItem();
+        SetEndCoordinates(enemyGridItem);
+        
+        FindPath();
+
+        enemyGridItem.SetIsOccupiedGridItem();
+        GetGridItem(unit).GetComponent<GridStats>().SetIsOccupiedGridItem();
     }
 }
 

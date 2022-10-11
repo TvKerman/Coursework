@@ -12,8 +12,8 @@ namespace TurnBasedBattleSystemFromRomchik
         private bool _isAnimationOn = false;
 
         private static int _currentUnitIndex = 0;
-
-
+        private float _bonusDamage = 0.1f;
+        private int _maxBonusDamage = 10;
         public StepSystem(List<Unit> _unitList)
         {
             unitList = _unitList;
@@ -78,7 +78,7 @@ namespace TurnBasedBattleSystemFromRomchik
             CurrentUnitIndex++;
         }
 
-        public void PlayerAttack(RaycastHit hit, MeleeEnemy isMeleeEnemyOnScene)
+        public void PlayerAttack(RaycastHit hit, MeleeEnemy isMeleeEnemyOnScene, IMiniGameLogic miniGame)
         {
             Unit unit = UnitInList.GetComponent<Unit>();
             int damage;
@@ -91,14 +91,13 @@ namespace TurnBasedBattleSystemFromRomchik
                     unit is MeleeFriendly && enemy is MeleeEnemy ||
                     unit is MeleeFriendly && isMeleeEnemyOnScene == null)
                 {
-                    enemy.Damage(damage);
-                    Debug.Log(damage);
+                    enemy.Damage(FormationOfTheFinalDamage(damage, _maxBonusDamage ,miniGame.GetScore, miniGame.MaxScore));
                     NewTurn();
                 }
             }
         }
 
-        public void EnemyAttack(Enemy enemyType)
+        public Unit EnemyAttack(Enemy enemyType)
         {
             int damage;
             damage = enemyType.damage;
@@ -120,36 +119,107 @@ namespace TurnBasedBattleSystemFromRomchik
             }
             friendlyToAttack.Damage(damage);
             NewTurn();
+            return friendlyToAttack;
         }
 
-        public IEnumerator DeleyFriendly(Unit friendly)
+        public IEnumerator DeleyFriendly(Unit friendly, Unit enemy)
         {
             _isAnimationOn = true;
             if (friendly != null)
             {
-                friendly.GetComponent<Renderer>().material.color = Color.red;
+                friendly.AnimationAttack();
             }
             yield return new WaitForSeconds(0.5f);
             if (friendly != null)
             {
-                friendly.GetComponent<Renderer>().material.color = Color.blue;
+                enemy.AnimationHit();
             }
             _isAnimationOn = false;
         }
 
-        public IEnumerator DeleyEnemy(Unit enemy)
+        public IEnumerator DeleyEnemy(Unit enemy, Unit friendly)
         {
             _isAnimationOn = true;
             if (enemy != null)
             {
-                enemy.GetComponent<Renderer>().material.color = Color.blue;
+                enemy.AnimationAttack();
             }
-            yield return new WaitForSeconds(0.5f);
+            //yield return new WaitForSeconds(0.05f);
             if (enemy != null)
             {
-                enemy.GetComponent<Renderer>().material.color = Color.red;
+                friendly.AnimationHit();
             }
+            yield return new WaitForSeconds(2.5f);
             _isAnimationOn = false;
+        }
+
+        public bool isMeleeUnitOnScene() {
+            foreach (var unit in unitList) {
+                if (unit != null && unit is MeleeEnemy) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool PlayerWin() {
+            foreach (var unit in unitList) {
+                if (unit != null && unit is Enemy) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool PlayerLose()
+        {
+            foreach (var unit in unitList)
+            {
+                if (unit != null && unit is Friendly)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public void HideUnitIcons() {
+            foreach (var unit in unitList) {
+                if (unit != null) {
+                    unit.SetFalseUnitUI();
+                }
+            }
+        }
+
+        public void ShowUnitIcons() {
+            foreach (var unit in unitList) {
+                if (unit != null) {
+                    unit.SetTrueUnitUI();
+                }
+            }
+        }
+
+        private int FormationOfTheFinalDamage(int basicDamage, int score, int MaxScore)
+        {
+            if (Mathf.Abs(score) > Mathf.Abs(MaxScore))
+            {
+                score = MaxScore * (score / Mathf.Abs(score));
+            }
+
+            return (int)(basicDamage * (1f + (score / (float)MaxScore) * _bonusDamage));
+        }
+
+        private int FormationOfTheFinalDamage(int basicDamage, int MaxDamageBonus, int score, int MaxScore)
+        {
+            if (Mathf.Abs(score) > Mathf.Abs(MaxScore))
+            {
+                score = MaxScore * (score / Mathf.Abs(score));
+            }
+
+            return (int)(basicDamage + (score / (float)MaxScore) * MaxDamageBonus);
         }
     }
 }
