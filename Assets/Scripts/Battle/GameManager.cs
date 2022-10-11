@@ -149,11 +149,13 @@ namespace TurnBasedBattleSystemFromRomchik
             isStartMiniGame = true;
             miniGame.SetActive(isStartMiniGame);
             miniGameLogic.InitMiniGame();
+            HideUserInterface();
         }
 
         private void EndMiniGame(GameObject miniGame, ref bool isStartMiniGame) {
             isStartMiniGame = false;
             miniGame.SetActive(isStartMiniGame);
+            ShowUserInterface();
         }
 
         private void EndBattle() {
@@ -168,9 +170,11 @@ namespace TurnBasedBattleSystemFromRomchik
             if (PlayerWin && !_UIturn.PlayerWin)
             {
                 _UIturn.SetPlayerWin();
+                _isButtleOver = true;
             }
             else if (PlayerLose && !_UIturn.PlayerLose) {
                 _UIturn.SetPlayerLose();
+                _isButtleOver = true;
             }
         }
 
@@ -192,6 +196,16 @@ namespace TurnBasedBattleSystemFromRomchik
         {
             _mainCam.transform.position = _tempPosition;
             _mainCam.transform.localEulerAngles = _tempLocalEulerAngles;
+        }
+
+        private void HideUserInterface() {
+            _UIturn.gameObject.SetActive(false);
+            _stepSystem.HideUnitIcons();
+        }
+
+        private void ShowUserInterface() {
+            _UIturn.gameObject.SetActive(true);
+            _stepSystem.ShowUnitIcons();
         }
 
         private void StartDeleyEnemy(Unit enemy, Unit friendly) => StartCoroutine(_stepSystem.DeleyEnemy(enemy, friendly));

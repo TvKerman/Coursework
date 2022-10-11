@@ -144,18 +144,18 @@ namespace TurnBasedBattleSystemFromRomchik
             {
                 enemy.AnimationAttack();
             }
-            yield return new WaitForSeconds(0.5f);
+            //yield return new WaitForSeconds(0.05f);
             if (enemy != null)
             {
                 friendly.AnimationHit();
             }
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(2.5f);
             _isAnimationOn = false;
         }
 
         public bool isMeleeUnitOnScene() {
             foreach (var unit in unitList) {
-                if (unit is MeleeEnemy) {
+                if (unit != null && unit is MeleeEnemy) {
                     return true;
                 }
             }
@@ -165,7 +165,7 @@ namespace TurnBasedBattleSystemFromRomchik
 
         public bool PlayerWin() {
             foreach (var unit in unitList) {
-                if (unit is Enemy) {
+                if (unit != null && unit is Enemy) {
                     return false;
                 }
             }
@@ -177,13 +177,29 @@ namespace TurnBasedBattleSystemFromRomchik
         {
             foreach (var unit in unitList)
             {
-                if (unit is Friendly)
+                if (unit != null && unit is Friendly)
                 {
                     return false;
                 }
             }
 
             return true;
+        }
+
+        public void HideUnitIcons() {
+            foreach (var unit in unitList) {
+                if (unit != null) {
+                    unit.SetFalseUnitUI();
+                }
+            }
+        }
+
+        public void ShowUnitIcons() {
+            foreach (var unit in unitList) {
+                if (unit != null) {
+                    unit.SetTrueUnitUI();
+                }
+            }
         }
 
         private int FormationOfTheFinalDamage(int basicDamage, int score, int MaxScore)

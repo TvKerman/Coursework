@@ -103,6 +103,7 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
             if (bigCircle.transform.localScale.x <= smallCircle.transform.localScale.x)
             {
                 DestroyCircle(smallCircle, bigCircle);
+                MinusScore(30);
             }
             if (!isFree)
             {
@@ -136,6 +137,7 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
         _score = 0;
         _timer = 0f;
         _spawnRate = _startSpawnRate;
+        AddScore(_score);
     }
 
     private void AddScore(int _score)
