@@ -6,6 +6,9 @@ public class NPCLogic : MonoBehaviour
 {
     private string message = "Великие диалоги. Не знаю нужно или нет но пусть будет...";
 
+    [SerializeField] private Movement _player;
+    [SerializeField] private GameManager _gameManager;
+
     private int _keyScene = 2;
 
     private double _waitingTime = 0.5f;
@@ -25,12 +28,15 @@ public class NPCLogic : MonoBehaviour
     {
         if (_isStartBattle) {
             //Выполнить  сохранение и запустить загрузку сцены
+            _gameManager.SaveState();
             StartLoadBattleScene();
         }
 
         if (_isPlayerInTrigger && _timer <= 0.0)
         {
             //Надо заблокировать игроку возможность двигаться 
+            _player.StopPlayer();
+            _player.PlayerCanMove = false;
             GetMessage();
         }
         else if (_isPlayerInTrigger) { 
@@ -49,7 +55,11 @@ public class NPCLogic : MonoBehaviour
     }
 
     private void StartLoadBattleScene() {
-        // GameManager.LoadScene(_keyScene);
+        _gameManager.LoadScene(_keyScene);
+    }
+
+    public bool StartBattle {
+        get { return _isStartBattle; }
     }
 
     private void OnTriggerEnter(Collider other)

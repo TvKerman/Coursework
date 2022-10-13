@@ -10,7 +10,9 @@ namespace TurnBasedBattleSystemFromRomchik
     {
         private Camera _mainCam;
         private StepSystem _stepSystem;
-        private Spawn _spawnSystem;
+        private ISaveSystem _saveSystem;
+        private SaveData _saveData;
+        //private Spawn _spawnSystem;
 
         [SerializeField] private GameObject _osuMiniGame;
         [SerializeField] private GameObject _rhythmMiniGame;
@@ -36,11 +38,26 @@ namespace TurnBasedBattleSystemFromRomchik
         private bool _isActiveRhythmMiniGame = false;
         private bool _isButtleOver = false;
 
+        private bool _playerLose = false;
+        private bool _playerWin = false;
 
         private void Start()
         {
+            _saveSystem = new JSONSaveSystem();
+            _saveData = _saveSystem.LoadAutoSave();
+
+            MeleeEnemy[] meleeEnemies = FindObjectsOfType<MeleeEnemy>();
+            foreach (MeleeEnemy meleeEnemy in meleeEnemies) {
+                meleeEnemy.LoadState(_saveData);
+            }
+            RangeEnemy[] rangeEnemies = FindObjectsOfType<RangeEnemy>();
+            foreach (RangeEnemy rangeEnemy in rangeEnemies) {
+                rangeEnemy.LoadState(_saveData);
+            }
+
             List<Unit> unitList = MakeListOfUnits();
             _stepSystem = new StepSystem(unitList);
+            
             _mainCam = Camera.main;
 
             _osu = Instantiate(_osuMiniGame, _positionOSU, Quaternion.identity);
@@ -60,7 +77,18 @@ namespace TurnBasedBattleSystemFromRomchik
                 EndBattle();
             }
             else if (Input.GetKey(KeyCode.Return)) {
-                Application.Quit();
+                if (_playerWin)
+                {
+                    _saveData.playerData.isPlayerCanMove = true;
+                    _saveData.playerData.isPlayerNotLose = true;
+                    _saveData.npc[_saveData.battleData.keyCodeNPC].isActive = false;
+                }
+                else if (_playerLose) {
+                    _saveData.playerData.isPlayerCanMove = false;
+                    _saveData.playerData.isPlayerNotLose = false;
+                }
+                _saveSystem.AutoSave(_saveData);
+                SceneManager.LoadSceneAsync(1);
             }
 
             Unit currentUnit = _stepSystem.UnitInList;
@@ -134,8 +162,11 @@ namespace TurnBasedBattleSystemFromRomchik
 
         private void EnemyAttack() {
             Enemy attackingEnemy = _stepSystem.UnitInList as Enemy;
-            Unit friendly = _stepSystem.EnemyAttack(attackingEnemy);
-            StartDeleyEnemy(attackingEnemy, friendly);
+            if (attackingEnemy.gameObject.activeSelf != false)
+            {
+                Unit friendly = _stepSystem.EnemyAttack(attackingEnemy);
+                StartDeleyEnemy(attackingEnemy, friendly);
+            }
         }
 
         private void PlayerAttack(Unit currentUnit, IMiniGameLogic miniGame) {
@@ -171,10 +202,12 @@ namespace TurnBasedBattleSystemFromRomchik
             {
                 _UIturn.SetPlayerWin();
                 _isButtleOver = true;
+                _playerWin = PlayerWin;
             }
             else if (PlayerLose && !_UIturn.PlayerLose) {
                 _UIturn.SetPlayerLose();
                 _isButtleOver = true;
+                _playerLose = PlayerLose;
             }
         }
 

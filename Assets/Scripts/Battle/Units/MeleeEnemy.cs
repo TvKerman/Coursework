@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MeleeEnemy : Enemy
-{ 
+{
     void Awake()
     {
         health = 100;
@@ -13,8 +13,10 @@ public class MeleeEnemy : Enemy
         type = "melee enemy";
 
     }
-    void Update()
-    {
-        
+
+    public void LoadState(SaveData saveData) {
+        gameObject.SetActive(saveData.battleData.meleeEnemies[row].isActive);
+
+        health = saveData.battleData.meleeEnemies[row].maxHealtPoints;
     }
 }

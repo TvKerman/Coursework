@@ -11,6 +11,9 @@ TagManager:
   - Dead
   - FriendUnit
   - Tirget Button
+  - Ground
+  - Swamp
+  - NPC
   layers:
   - Default
   - TransparentFX

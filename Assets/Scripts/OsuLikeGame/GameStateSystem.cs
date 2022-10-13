@@ -37,15 +37,15 @@ public class GameStateSystem : MonoBehaviour
     public void AutoSave()
     {
         SaveData saveData = GetSaveData();
-        saveData.Info = new SaveInfo() {Id = "AutoSave"};
-        _saveSystem.Save(saveData, true);
+        saveData.Info = new SaveInfo() {name = "AutoSave"};
+        _saveSystem.AutoSave(saveData);
     }
 
     public void LoadAutoSave()
     {
         menuPause.SetActive(false);
         //FindObjectOfType<Movement>().PauseIsOver();
-        SetSaveData(_saveSystem.Load(true));
+        SetSaveData(_saveSystem.LoadAutoSave());
     }
 
 
@@ -55,7 +55,7 @@ public class GameStateSystem : MonoBehaviour
         saveData.Info = new SaveInfo();
         //Debug.Log(DateTime.UtcNow.ToString(
         //    "ss-mm-hh-dd-MM-yyyy") + ".json");
-        _saveSystem.Save(saveData, false, DateTime.UtcNow.ToString(
+        _saveSystem.Save(saveData, DateTime.UtcNow.ToString(
             "ss-mm-hh-dd-MM-yyyy") + ".json");
         savePanel.Add(saveData.Info);
     }
@@ -64,7 +64,7 @@ public class GameStateSystem : MonoBehaviour
     private void OnLoadRequested(string save)
     {
         
-        SaveData saveData = _saveSystem.Load(false ,save);
+        SaveData saveData = _saveSystem.Load(save);
         SetSaveData(saveData);
     }
 }

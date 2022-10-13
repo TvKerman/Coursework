@@ -15,27 +15,30 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button _bonusBtn;
 
     private ISaveSystem _saveSystem;
-    private string _savePath;
+    private bool _autosaveExist = false;
 
     private void Awake()
     {
         _saveSystem = new JSONSaveSystem();
-        if (_savePath == null)
-            _continueBtn.gameObject.SetActive(false);
-        else 
+        _autosaveExist = _saveSystem.SavingExists();
+        if (_autosaveExist)
             _continueBtn.gameObject.SetActive(true);
+        else 
+            _continueBtn.gameObject.SetActive(false);
     }
 
     public void NewGame() {
         // Надо создавать новый .json файл типа Autosave.json.
         // При этом в Awake загружаемой сцены устанавливать данные из Autosave.json 
-        Debug.Log("Новая игра");
-        SceneManager.LoadScene(1);
+        //Debug.Log("Новая игра");
+        _saveSystem.AutoSave(_saveSystem.CreateStartSave());
+        SceneManager.LoadSceneAsync(1);
     }
 
     public void Continue() {
         // Если нет файла Autosave.json, то кнопка вне времени и пространства.
         // Если есть, то загрузить сцену и в сцене установить данные из Autosave.json
+        SceneManager.LoadSceneAsync(1);
         Debug.Log("Продолжить");
     }
 

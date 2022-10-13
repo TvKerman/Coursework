@@ -13,8 +13,11 @@ public class RangeEnemy : Enemy
 
         type = "range enemy";
     }
-    void Update()
+
+    public void LoadState(SaveData saveData)
     {
-        
+        gameObject.SetActive(saveData.battleData.rangeEnemies[row].isActive);
+
+        health = saveData.battleData.rangeEnemies[row].maxHealthPoints;
     }
 }
