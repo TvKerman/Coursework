@@ -22,7 +22,7 @@ public class JSONSaveSystem : ISaveSystem
         Debug.Log(fileName);
         saveData.Info.name = fileName;
         var json = JsonUtility.ToJson(saveData);
-        using (var writer = new StreamWriter(GetPathSaveDirectory(false, fileName)))
+        using (var writer = new StreamWriter(GetPathSaveDirectory(fileName)))
         {
             writer.WriteLine(json);
         }
@@ -30,7 +30,7 @@ public class JSONSaveSystem : ISaveSystem
 
     public SaveData Load(string fileName) {
         string json = "";
-        using (var reader = new StreamReader(GetPathSaveDirectory(false, fileName)))
+        using (var reader = new StreamReader(GetPathSaveDirectory(fileName)))
         {
             string line;
             while ((line = reader.ReadLine()) != null)
@@ -50,7 +50,7 @@ public class JSONSaveSystem : ISaveSystem
     public void AutoSave(SaveData saveData) {
         saveData.Info.name = _fileNameAutoSave;
         var json = JsonUtility.ToJson(saveData);
-        using (var writer = new StreamWriter(GetPathSaveDirectory(false, _fileNameAutoSave)))
+        using (var writer = new StreamWriter(GetPathSaveDirectory(_fileNameAutoSave)))
         {
             writer.WriteLine(json);
         }
@@ -58,7 +58,7 @@ public class JSONSaveSystem : ISaveSystem
 
     public SaveData LoadAutoSave() {
         string json = "";
-        using (var reader = new StreamReader(GetPathSaveDirectory(false, _fileNameAutoSave)))
+        using (var reader = new StreamReader(GetPathSaveDirectory(_fileNameAutoSave)))
         {
             string line;
             while ((line = reader.ReadLine()) != null)
@@ -76,7 +76,7 @@ public class JSONSaveSystem : ISaveSystem
     }
 
     public bool SavingExists() {
-        return File.Exists(GetPathSaveDirectory(true, _fileNameAutoSave));
+        return File.Exists(GetPathSaveDirectory(_fileNameAutoSave));
     }
 
     public SaveData CreateStartSave() {
@@ -115,17 +115,14 @@ public class JSONSaveSystem : ISaveSystem
         return saveData;
     }
 
-    public string GetPathSaveDirectory(bool isAutoSave, string fileName) {
-        if (isAutoSave)
-            return _filePathSavesDirectory + _fileNameAutoSave;
-        else 
-            return _filePathSavesDirectory + _fileNameDirectory + fileName;
+    public string GetPathSaveDirectory(string fileName) {
+        return _filePathSavesDirectory + _fileNameDirectory + fileName;
     }
 
     public void DeleteSave(string filePath)
     {
         Debug.Log(filePath);
-        filePath = GetPathSaveDirectory(false, filePath);
+        filePath = GetPathSaveDirectory(filePath);
         if (File.Exists(filePath))
         {
             File.Delete(filePath);

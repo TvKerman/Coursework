@@ -62,6 +62,10 @@ public class NPCLogic : MonoBehaviour
         get { return _isStartBattle; }
     }
 
+    public bool PlayerOnTrigger {
+        get { return _isPlayerInTrigger; }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player") {

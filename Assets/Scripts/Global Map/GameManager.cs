@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     private GameObject _Player;
+    [SerializeField] private GameObject exitMainMenu;
+    [SerializeField] private GameObject LoadCanvas;
     private List<GameObject> _npc = new List<GameObject>();
     private ISaveSystem _saveSystem;
 
@@ -16,6 +18,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        exitMainMenu.SetActive(false);
         _Player = GameObject.FindGameObjectWithTag("Player");
         var array = GameObject.FindGameObjectsWithTag("NPC");
         foreach (var npc in array) { 
@@ -29,6 +32,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape) && StartDialog()) {
+            exitMainMenu.SetActive(!exitMainMenu.activeSelf);
+            _Player.GetComponent<Movement>().PlayerCanMove = !_Player.GetComponent<Movement>().PlayerCanMove;
+        }
+
         if (!_isPlayerNotLose) {
             Debug.Log("Поплачь...");
         }
@@ -62,7 +70,29 @@ public class GameManager : MonoBehaviour
 
     public void LoadScene(int key) {
         SaveState();
-        SceneManager.LoadSceneAsync(key);
+        LoadCanvas.GetComponent<Animator>().SetBool("Deload", true);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(key);
+    }
+
+    private bool StartDialog() {
+        foreach (var npc in _npc) {
+            if (npc.activeSelf != false && !npc.GetComponent<NPCLogic>().PlayerOnTrigger) { 
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void ExitMainMenu() {
+        _Player.GetComponent<Movement>().PlayerCanMove = true;
+        SaveState();
+        AsyncOperation operation = SceneManager.LoadSceneAsync(0);
+    }
+
+    public void Close() {
+        exitMainMenu.SetActive(!exitMainMenu.activeSelf);
+        _Player.GetComponent<Movement>().PlayerCanMove = !_Player.GetComponent<Movement>().PlayerCanMove;
     }
 
     public bool PlayerNotLose {

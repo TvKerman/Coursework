@@ -17,7 +17,7 @@ public interface ISaveSystem {
 
     public SaveData CreateStartSave();
 
-    public string GetPathSaveDirectory(bool isAutoSave, string fileName);
+    public string GetPathSaveDirectory(string fileName);
 
     void DeleteSave(string filePath);
 }

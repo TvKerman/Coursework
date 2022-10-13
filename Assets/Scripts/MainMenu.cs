@@ -14,6 +14,9 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button _quitBtn;
     [SerializeField] private Button _bonusBtn;
 
+    [SerializeField] private GameObject LoadCanvas;
+    [SerializeField] private GameObject ButtonCanvas;
+
     private ISaveSystem _saveSystem;
     private bool _autosaveExist = false;
 
@@ -32,13 +35,15 @@ public class MainMenu : MonoBehaviour
         // При этом в Awake загружаемой сцены устанавливать данные из Autosave.json 
         //Debug.Log("Новая игра");
         _saveSystem.AutoSave(_saveSystem.CreateStartSave());
-        SceneManager.LoadSceneAsync(1);
+        DeloadAnimation();
+        AsyncOperation operation = SceneManager.LoadSceneAsync(1);
     }
 
     public void Continue() {
         // Если нет файла Autosave.json, то кнопка вне времени и пространства.
         // Если есть, то загрузить сцену и в сцене установить данные из Autosave.json
-        SceneManager.LoadSceneAsync(1);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(1);
+        DeloadAnimation();
         Debug.Log("Продолжить");
     }
 
@@ -58,7 +63,13 @@ public class MainMenu : MonoBehaviour
     public void Bonus() {
         // Возможно стоит добавить какое-то меню с настройкой сцены...
         Debug.Log("Адекватным вход запрещён");
-        SceneManager.LoadScene(3);
+        DeloadAnimation();
+        AsyncOperation operation =  SceneManager.LoadSceneAsync(3);
+    }
+
+    private void DeloadAnimation() {
+        LoadCanvas.GetComponent<Animator>().SetBool("Deload", true);
+        ButtonCanvas.GetComponent<Animator>().SetBool("Deload", true);
     }
 
     public void Exit() {

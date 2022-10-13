@@ -16,7 +16,12 @@ namespace TurnBasedBattleSystemFromRomchik
 
         [SerializeField] private GameObject _osuMiniGame;
         [SerializeField] private GameObject _rhythmMiniGame;
-        
+
+        [SerializeField] private GameObject LoadCanvas;
+        [SerializeField] private GameObject Interface;
+        [SerializeField] private Animator _Friendly;
+        [SerializeField] private Animator _Enemy;
+
         private UICurrentTurn _UIturn;
 
         private Vector3 _tempPosition;
@@ -88,7 +93,11 @@ namespace TurnBasedBattleSystemFromRomchik
                     _saveData.playerData.isPlayerNotLose = false;
                 }
                 _saveSystem.AutoSave(_saveData);
-                SceneManager.LoadSceneAsync(1);
+                LoadCanvas.GetComponent<Animator>().SetBool("Deload", true);
+                Interface.GetComponent<Animator>().SetBool("Deload", true);
+                _Friendly.SetBool("Deload", true);
+                _Enemy.SetBool("Deload", true);
+                AsyncOperation operation = SceneManager.LoadSceneAsync(1);
             }
 
             Unit currentUnit = _stepSystem.UnitInList;
