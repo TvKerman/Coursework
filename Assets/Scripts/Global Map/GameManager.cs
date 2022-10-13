@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
     private List<GameObject> _npc = new List<GameObject>();
     private ISaveSystem _saveSystem;
 
-    private LoadScene loadScene;
 
     private bool _isPlayerNotLose = true;
     private bool _isPlayerNotWin = true;
@@ -86,8 +85,7 @@ public class GameManager : MonoBehaviour
 
     public void ExitMainMenu() {
         _Player.GetComponent<Movement>().PlayerCanMove = true;
-        SaveState();
-        AsyncOperation operation = SceneManager.LoadSceneAsync(0);
+        LoadScene(0);
     }
 
     public void Close() {
