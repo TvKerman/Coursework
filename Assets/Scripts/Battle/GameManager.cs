@@ -12,6 +12,11 @@ namespace TurnBasedBattleSystemFromRomchik
         private StepSystem _stepSystem;
         private Spawn _spawnSystem;
 
+        [SerializeField] private Terrain hellTerrain;
+        [SerializeField] private Terrain normalTerrain;
+        [SerializeField] private Material HellSkyBox;
+        [SerializeField] private Material NormalSkyBox;
+
         [SerializeField] private GameObject _osuMiniGame;
         [SerializeField] private GameObject _rhythmMiniGame;
         
@@ -35,6 +40,30 @@ namespace TurnBasedBattleSystemFromRomchik
         private bool _isActiveOsuMiniGame = false;
         private bool _isActiveRhythmMiniGame = false;
         private bool _isButtleOver = false;
+
+        private bool _isHellThemeActive = false;
+
+        public bool isHellThemeActive
+        {
+            get { return _isHellThemeActive; }
+            set { _isHellThemeActive = value; }
+        }
+
+        private void Awake()
+        {
+            if (isHellThemeActive)
+            {
+                normalTerrain.enabled = false;
+                hellTerrain.enabled = true;
+                RenderSettings.skybox = HellSkyBox;
+            }
+            else
+            {
+                normalTerrain.enabled = true;
+                hellTerrain.enabled = false;
+                RenderSettings.skybox = NormalSkyBox;
+            }
+        }
 
 
         private void Start()
