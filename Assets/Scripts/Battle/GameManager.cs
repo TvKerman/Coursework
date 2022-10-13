@@ -14,6 +14,11 @@ namespace TurnBasedBattleSystemFromRomchik
         private SaveData _saveData;
         //private Spawn _spawnSystem;
 
+        [SerializeField] private Terrain hellTerrain;
+        [SerializeField] private Terrain normalTerrain;
+        [SerializeField] private Material HellSkyBox;
+        [SerializeField] private Material NormalSkyBox;
+
         [SerializeField] private GameObject _osuMiniGame;
         [SerializeField] private GameObject _rhythmMiniGame;
 
@@ -43,8 +48,32 @@ namespace TurnBasedBattleSystemFromRomchik
         private bool _isActiveRhythmMiniGame = false;
         private bool _isButtleOver = false;
 
+        private bool _isHellThemeActive = false;
         private bool _playerLose = false;
         private bool _playerWin = false;
+
+        public bool isHellThemeActive
+        {
+            get { return _isHellThemeActive; }
+            set { _isHellThemeActive = value; }
+        }
+
+        private void Awake()
+        {
+            if (isHellThemeActive)
+            {
+                normalTerrain.enabled = false;
+                hellTerrain.enabled = true;
+                RenderSettings.skybox = HellSkyBox;
+            }
+            else
+            {
+                normalTerrain.enabled = true;
+                hellTerrain.enabled = false;
+                RenderSettings.skybox = NormalSkyBox;
+            }
+        }
+
 
         private void Start()
         {
@@ -82,6 +111,7 @@ namespace TurnBasedBattleSystemFromRomchik
                 EndBattle();
             }
             else if (Input.GetKey(KeyCode.Return)) {
+                
                 if (_playerWin)
                 {
                     _saveData.playerData.isPlayerCanMove = true;

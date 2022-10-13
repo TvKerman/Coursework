@@ -12,7 +12,10 @@ public class Movement : MonoBehaviour
     private Vector3 hitPoint;
     private PlayerMotor motor;
 
+    private Animator animator;
     private Interactable focus;
+
+    Vector3 positionToMove;
 
 
     private bool _isPlayerCanMove = true;
@@ -21,7 +24,9 @@ public class Movement : MonoBehaviour
     void Start()
     {
         mainCam = Camera.main;
+        animator = GetComponentInChildren<Animator>();
         motor = GetComponent<PlayerMotor>();
+        positionToMove = new Vector3(0, 0, 0);
     }
 
     void Update()
@@ -38,14 +43,22 @@ public class Movement : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 100, movementMask) && !isPause)
             {
-                Vector3 positionToMove = hit.point;
+                animator.SetBool("Move", true);
+                positionToMove = hit.point;
                 motor.MoveTo(positionToMove);
                 Interactable interactable = hit.transform.GetComponent<Interactable>();
                 if (interactable != null)
                 {
                     SetFocus(interactable);
                 }
-            }
+            }    
+        }
+
+        if (Mathf.Abs(motor.transform.position.x - positionToMove.x) < 1 &&
+                Mathf.Abs(motor.transform.position.y - positionToMove.y) < 1 &&
+                Mathf.Abs(motor.transform.position.z - positionToMove.z) < 1)
+        {
+            animator.SetBool("Move", false);
         }
     }
 
