@@ -4070,7 +4070,7 @@ Transform:
   m_Children:
   - {fileID: 232977847}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &754369611
 PrefabInstance:
@@ -7699,7 +7699,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1013791300
 PrefabInstance:
@@ -9248,13 +9248,13 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.012099671
       objectReference: {fileID: 0}
-    - target: {fileID: 2214882088779763078, guid: c3186c3462cb9594d97d5729dff61024, type: 3}
-      propertyPath: row
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2214882088779763075, guid: c3186c3462cb9594d97d5729dff61024, type: 3}
       propertyPath: m_Constraints
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 2214882088779763078, guid: c3186c3462cb9594d97d5729dff61024, type: 3}
+      propertyPath: row
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2214882088779763079, guid: c3186c3462cb9594d97d5729dff61024, type: 3}
       propertyPath: m_RootOrder
@@ -9435,7 +9435,7 @@ Transform:
   m_Children:
   - {fileID: 1444230952}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1407300747
 PrefabInstance:
@@ -10041,7 +10041,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1692273840
 PrefabInstance:
@@ -11747,7 +11747,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1789028593
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -12016,7 +12016,7 @@ RectTransform:
   m_Children:
   - {fileID: 473097422}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -15862,13 +15862,13 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.012099671
       objectReference: {fileID: 0}
-    - target: {fileID: 4042006713518597764, guid: 55d8b5166a2ce5845b152843da3cae55, type: 3}
-      propertyPath: row
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4042006713518597761, guid: 55d8b5166a2ce5845b152843da3cae55, type: 3}
       propertyPath: m_Constraints
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 4042006713518597764, guid: 55d8b5166a2ce5845b152843da3cae55, type: 3}
+      propertyPath: row
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4042006713518597765, guid: 55d8b5166a2ce5845b152843da3cae55, type: 3}
       propertyPath: m_RootOrder

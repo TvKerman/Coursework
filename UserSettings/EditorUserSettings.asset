@@ -6,17 +6,13 @@ EditorUserSettings:
   serializedVersion: 4
   m_ConfigSettings:
     RecentlyUsedSceneGuid-0:
-      value: 0009045757060a08085a552649775944134f48797d7d7f667d7e1e61bbe56168
+      value: 5a5757560101590a5d0c0e24427b5d44434e4c7a7b7a23677f2b4565b7b5353a
       flags: 0
     RecentlyUsedSceneGuid-1:
-<<<<<<< HEAD
-      value: 5a5757560101590a5d0c0e24427b5d44434e4c7a7b7a23677f2b4565b7b5353a
-=======
-      value: 00060d53530d080a585b5a7140265e4413164f2e2e7d7e687d711b67e6b76d6c
->>>>>>> remotes/origin/RamzAss
+      value: 52020d5f51005809585b5f26427b0a44454f4c2b7f2d76642c2a4937bbb5353a
       flags: 0
     RecentlyUsedSceneGuid-2:
-      value: 52020d5f51005809585b5f26427b0a44454f4c2b7f2d76642c2a4937bbb5353a
+      value: 0009045757060a08085a552649775944134f48797d7d7f667d7e1e61bbe56168
       flags: 0
     vcSharedLogLevel:
       value: 0d5e400f0650
