@@ -5,32 +5,74 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    public PlayerMovementData movementData;
+    public PlayerData playerData = new PlayerData();
 
-    public SaveInfo Info;
+    public BattleData battleData;
+
+    public List<NPCData> npc = new List<NPCData>();
+
+    public SaveInfo Info = new SaveInfo();
 }
 
 [Serializable]
-public class PlayerMovementData
+public class PlayerData
 {
     public Vector3 position;
+    public Vector3 rotation;
+    public Vector3 cameraPosition;
+    public Vector3 cameraRotation;
+
     public bool isPlayerCanMove;
+    public bool isPlayerNotLose;
+    public bool isPlayerNotWin;
 }
 
-
+[Serializable]
 public class NPCData 
 {
     public Vector3 position;
+    public Vector3 rotation;
+    public Vector3 centerTriger;
+    public Vector3 sizeTriger;
 
     public bool isActive;
-    public bool isPlayerInTrigger;
-    public bool isGetMessage;
-    public bool isStartBattle;
-    public bool isButtonCloseDialog;
+    //public bool isPlayerInTrigger;
+    //public bool isGetMessage;
+    //public bool isStartBattle;
+    //public bool isButtonCloseDialog;
+}
+
+[Serializable]
+public class BattleData {
+    public int keyCodeNPC;
+
+    public List<MeleeEnemyData> meleeEnemies = new List<MeleeEnemyData>();
+    public List<RangeEnemyData> rangeEnemies = new List<RangeEnemyData>();
+
+    BattleData() {
+        for (int i = 0; i < 3; i++) {
+            meleeEnemies.Add(new MeleeEnemyData());
+            rangeEnemies.Add(new RangeEnemyData());
+        }
+    }
+}
+
+[Serializable]
+public class MeleeEnemyData {
+    public bool isActive;
+
+    public int maxHealtPoints;
+}
+
+[Serializable]
+public class RangeEnemyData {
+    public bool isActive;
+
+    public int maxHealthPoints;
 }
 
 [Serializable]
 public class SaveInfo
 {
-    public string Id;
+    public string name;
 }

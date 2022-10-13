@@ -149,7 +149,7 @@ namespace TurnBasedBattleSystemFromRomchik
             {
                 friendly.AnimationHit();
             }
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(3.5f);
             _isAnimationOn = false;
         }
 
@@ -165,7 +165,7 @@ namespace TurnBasedBattleSystemFromRomchik
 
         public bool PlayerWin() {
             foreach (var unit in unitList) {
-                if (unit != null && unit is Enemy) {
+                if (unit != null && unit is Enemy && unit.gameObject.activeSelf != false) {
                     return false;
                 }
             }

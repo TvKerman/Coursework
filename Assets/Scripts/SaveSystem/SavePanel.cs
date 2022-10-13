@@ -43,7 +43,7 @@ public class SavePanel : MonoBehaviour
             string fileName = save.Remove(0, Application.persistentDataPath.Length + "/Saves/".Length);
             
             Debug.Log(fileName);
-            var saveData = _saveSystem.Load(false, fileName);
+            var saveData = _saveSystem.Load(fileName);
             Add(saveData.Info);
         }
     }
@@ -57,7 +57,7 @@ public class SavePanel : MonoBehaviour
     {   
         var item = Instantiate(_itemPrefab, _itemPrefab.transform.position + new Vector3(0, -50 * _items.Count, 0) , _container.rotation, _container);
         item.gameObject.SetActive(true);
-        item.Init(save.Id);
+        item.Init(save.name);
         _items.Add(item);
         item.Selected += OnItemSelected;
         item.Deleted += OnItemDeleted;

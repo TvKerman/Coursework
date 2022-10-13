@@ -18,7 +18,7 @@ public class Movement : MonoBehaviour
     Vector3 positionToMove;
 
 
-
+    private bool _isPlayerCanMove = true;
     private bool isPause = false;
 
     void Start()
@@ -31,7 +31,8 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(0))
+
+        if (Input.GetMouseButton(0) && _isPlayerCanMove)
         {
             if (focus != null)
             {
@@ -94,14 +95,17 @@ public class Movement : MonoBehaviour
         isPause = false;
     }
 
-    //public MovementData GetMovementData()
-    //{
-    //    return new MovementData() {position = transform.position, hitPoint = hitPoint};
-    //}
+    public void StopPlayer() {
+        motor.MoveTo(gameObject.transform.position);
+    }
 
-    //public void SetMovementData(MovementData data)
-    //{
-    //    transform.position = data.position;
-    //    motor.Agent.SetDestination(data.hitPoint);
-    //}
+    public void StopPlayer(Vector3 pos) { 
+        gameObject.transform.position = pos;
+        motor.Warp(pos);
+    }
+
+    public bool PlayerCanMove {
+        get { return _isPlayerCanMove; }
+        set { _isPlayerCanMove = value; }
+    }
 }

@@ -38,6 +38,10 @@ public class PlayerMotor : MonoBehaviour
         agent.SetDestination(position);
     }
 
+    public void Warp(Vector3 pos) {
+        agent.Warp(pos);
+    }
+
     public void FollowTarget(Transform newTarget)
     {
         agent.stoppingDistance = 1f;
