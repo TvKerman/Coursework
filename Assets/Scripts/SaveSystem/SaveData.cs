@@ -45,6 +45,7 @@ public class NPCData
 [Serializable]
 public class BattleData {
     public int keyCodeNPC;
+    public bool isOnHellRegion;
 
     public List<MeleeEnemyData> meleeEnemies = new List<MeleeEnemyData>();
     public List<RangeEnemyData> rangeEnemies = new List<RangeEnemyData>();
@@ -62,6 +63,8 @@ public class MeleeEnemyData {
     public bool isActive;
 
     public int maxHealtPoints;
+    public int damage;
+    public int initiative;
 }
 
 [Serializable]
@@ -69,6 +72,8 @@ public class RangeEnemyData {
     public bool isActive;
 
     public int maxHealthPoints;
+    public int damage;
+    public int initiative;
 }
 
 [Serializable]

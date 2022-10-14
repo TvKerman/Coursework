@@ -12,7 +12,6 @@ namespace TurnBasedBattleSystemFromRomchik
         private StepSystem _stepSystem;
         private ISaveSystem _saveSystem;
         private SaveData _saveData;
-        //private Spawn _spawnSystem;
 
         [SerializeField] private Terrain hellTerrain;
         [SerializeField] private Terrain normalTerrain;
@@ -33,7 +32,7 @@ namespace TurnBasedBattleSystemFromRomchik
         private Vector3 _tempLocalEulerAngles;
 
         private Vector3 _positionOSU = new Vector3(0, 0, 0);
-        private Vector3 _positionRhythm = new Vector3(0, 0, 900);
+        private Vector3 _positionRhythm = new Vector3(0, 0, -900);
 
         private RaycastHit hit;
 
@@ -47,48 +46,30 @@ namespace TurnBasedBattleSystemFromRomchik
         private bool _isActiveOsuMiniGame = false;
         private bool _isActiveRhythmMiniGame = false;
         private bool _isButtleOver = false;
-
-        private bool _isHellThemeActive = false;
         private bool _playerLose = false;
         private bool _playerWin = false;
 
-        public bool isHellThemeActive
-        {
-            get { return _isHellThemeActive; }
-            set { _isHellThemeActive = value; }
-        }
-
         private void Awake()
         {
-            if (isHellThemeActive)
+            _saveSystem = new JSONSaveSystem();
+
+            _saveData = _saveSystem.LoadAutoSave();
+
+            MeleeEnemy[] meleeEnemies = FindObjectsOfType<MeleeEnemy>();
+            foreach (MeleeEnemy meleeEnemy in meleeEnemies)
             {
-                normalTerrain.enabled = false;
-                hellTerrain.enabled = true;
-                RenderSettings.skybox = HellSkyBox;
+                meleeEnemy.LoadState(_saveData);
             }
-            else
+            RangeEnemy[] rangeEnemies = FindObjectsOfType<RangeEnemy>();
+            foreach (RangeEnemy rangeEnemy in rangeEnemies)
             {
-                normalTerrain.enabled = true;
-                hellTerrain.enabled = false;
-                RenderSettings.skybox = NormalSkyBox;
+                rangeEnemy.LoadState(_saveData);
             }
         }
 
 
         private void Start()
         {
-            _saveSystem = new JSONSaveSystem();
-            _saveData = _saveSystem.LoadAutoSave();
-
-            MeleeEnemy[] meleeEnemies = FindObjectsOfType<MeleeEnemy>();
-            foreach (MeleeEnemy meleeEnemy in meleeEnemies) {
-                meleeEnemy.LoadState(_saveData);
-            }
-            RangeEnemy[] rangeEnemies = FindObjectsOfType<RangeEnemy>();
-            foreach (RangeEnemy rangeEnemy in rangeEnemies) {
-                rangeEnemy.LoadState(_saveData);
-            }
-
             List<Unit> unitList = MakeListOfUnits();
             _stepSystem = new StepSystem(unitList);
             
@@ -102,6 +83,19 @@ namespace TurnBasedBattleSystemFromRomchik
             _rhythm.SetActive(false);
 
             _UIturn = FindObjectOfType<UICurrentTurn>();
+
+            if (_saveData.battleData.isOnHellRegion)
+            {
+                normalTerrain.enabled = false;
+                hellTerrain.enabled = true;
+                RenderSettings.skybox = HellSkyBox;
+            }
+            else
+            {
+                normalTerrain.enabled = true;
+                hellTerrain.enabled = false;
+                RenderSettings.skybox = NormalSkyBox;
+            }
         }
 
         void Update()
@@ -255,13 +249,14 @@ namespace TurnBasedBattleSystemFromRomchik
             _tempLocalEulerAngles = new Vector3(_mainCam.transform.localEulerAngles.x, _mainCam.transform.localEulerAngles.y, _mainCam.transform.localEulerAngles.z);
             if (_isActiveOsuMiniGame)
             {
-                _mainCam.transform.position = new Vector3(0, -16f, 400f);
+                _mainCam.transform.position = new Vector3(12, -17f, 1400f);
+                _mainCam.transform.localEulerAngles =  new Vector3 (0f, 180f, 0f);
             }
             else if (_isActiveRhythmMiniGame)
             {
-                _mainCam.transform.position = new Vector3(0, -16f, 600f);
+                _mainCam.transform.position = new Vector3(0, -16f, -1200);
+                _mainCam.transform.localEulerAngles = new Vector3(0, 0, 0);
             }
-            _mainCam.transform.localEulerAngles = new Vector3(0, 0, 0);
         }
 
         private void SetCameraInBattleScene() 

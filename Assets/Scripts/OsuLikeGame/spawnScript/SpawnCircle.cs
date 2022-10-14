@@ -19,7 +19,7 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
     private float _randX;
     private float _randY;
 
-    private float _speedMove = 3f;
+    private float _speedMove = 4f;
     private float _speedTime = 1f;
     private float _spawnRate;
     private float _timer = 0f;
@@ -52,8 +52,8 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
 
             _randX = Random.Range(-350f, 350f);
             _randY = Random.Range(-200f, 200f);
-            spawnCordinate = new Vector3(_randX, _randY, 900f);
-            spawnCordinate1 = new Vector3(_randX, _randY, 899f);
+            spawnCordinate = new Vector3(_randX, _randY, 903f);
+            spawnCordinate1 = new Vector3(_randX, _randY, 904f);
             bigCircle = Instantiate(_bigCircle, spawnCordinate, Quaternion.identity);
             smallCircle = Instantiate(_smallCircle, spawnCordinate1, Quaternion.identity);
             isFree = false;
@@ -174,42 +174,6 @@ public class SpawnCircle : MonoBehaviour, IMiniGameLogic
     public int GetScore {
         get { return _score; }
     }
-    //private void SlideLeft(GameObject big, GameObject small)
-    //{
-    //    if (!isFree && _timer > _spawnRate)
-    //    {
-    //        big.transform.position = new Vector3(big.transform.position.x - 50f, big.transform.position.y, big.transform.position.x);
-    //        small.transform.position = new Vector3(big.transform.position.x - 50f, big.transform.position.y, big.transform.position.x);
-    //    }
-    //}
-    //
-    //private void SlideRight(GameObject big, GameObject small)
-    //{
-    //    if (!isFree && _timer > _spawnRate)
-    //    {
-    //        big.transform.position = new Vector3(big.transform.position.x + 50f, big.transform.position.y, big.transform.position.x);
-    //        small.transform.position = new Vector3(big.transform.position.x + 50f, big.transform.position.y, big.transform.position.x);
-    //    }
-    //}
-    //
-    //
-    //private void SlideUp(GameObject big, GameObject small)
-    //{
-    //    if (!isFree && _timer > _spawnRate)
-    //    {
-    //        big.transform.position = new Vector3(big.transform.position.x, big.transform.position.y + 50f, big.transform.position.x);
-    //        small.transform.position = new Vector3(big.transform.position.x, big.transform.position.y + 50f, big.transform.position.x);
-    //    }
-    //}
-    //
-    //private void SlideDown(GameObject big, GameObject small)
-    //{
-    //    if (!isFree && _timer > _spawnRate)
-    //    {
-    //        big.transform.position = new Vector3(big.transform.position.x, big.transform.position.y - 50f, big.transform.position.x);
-    //        small.transform.position = new Vector3(big.transform.position.x, big.transform.position.y - 50f, big.transform.position.x);
-    //    }
-    //}
 
     private bool RandomSlide()
     {
