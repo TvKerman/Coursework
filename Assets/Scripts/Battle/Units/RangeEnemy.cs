@@ -19,5 +19,8 @@ public class RangeEnemy : Enemy
         gameObject.SetActive(saveData.battleData.rangeEnemies[row].isActive);
 
         health = saveData.battleData.rangeEnemies[row].maxHealthPoints;
+        damage = saveData.battleData.rangeEnemies[row].damage;
+        initiative = saveData.battleData.rangeEnemies[row].initiative;
+
     }
 }

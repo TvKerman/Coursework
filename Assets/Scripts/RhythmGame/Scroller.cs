@@ -15,10 +15,10 @@ public class Scroller : MonoBehaviour, IMiniGameLogic
     [SerializeField] private TextMeshProUGUI Text;
 
     private int _currentCount = 0;
-    private int _endMiniGame = 10;
+    private int _endMiniGame = 5;
     private int _score = 0;
 
-    private double _baseTime = 0.8;
+    private double _baseTime = 0.4;
     private double _timer;
 
     private System.Random _random = new System.Random();
@@ -69,7 +69,7 @@ public class Scroller : MonoBehaviour, IMiniGameLogic
         foreach (var currentSquare in _allSquares)
         {
             currentSquare.transform.position = new Vector3(currentSquare.transform.position.x,
-                                        currentSquare.transform.position.y - tempo * 4,
+                                        currentSquare.transform.position.y - tempo * 6,
                                         currentSquare.transform.position.z);
         }
     }

@@ -84,7 +84,7 @@ public class JSONSaveSystem : ISaveSystem
         saveData.Info.name = _fileNameAutoSave;
 
         saveData.playerData.isPlayerCanMove = true;
-        saveData.playerData.position = new Vector3(61.6f, 9.2f, 117.18f);
+        saveData.playerData.position = new Vector3(67f, 9.6f, 65f);
         saveData.playerData.rotation = new Vector3(0, 0, 0);
         saveData.playerData.cameraPosition = new Vector3(61.6f, 14.2f, 112.18f);
         saveData.playerData.cameraRotation = new Vector3(41.696f, 0, 0);
@@ -92,7 +92,7 @@ public class JSONSaveSystem : ISaveSystem
         saveData.playerData.isPlayerNotWin = true;
 
         // saveData.npc ...
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             saveData.npc.Add(new NPCData());
             saveData.npc[i].isActive = true;
         }
@@ -111,6 +111,11 @@ public class JSONSaveSystem : ISaveSystem
         saveData.npc[2].rotation = new Vector3(0, -55, 0);
         saveData.npc[2].centerTriger = new Vector3(0.1536164f, 0.7288874f, 0.002384539f);
         saveData.npc[2].sizeTriger = new Vector3(7.255716f, 2.327804f, 5.515227f);
+
+        saveData.npc[3].position = new Vector3(17.81f, 37.7f, 591.88f);
+        saveData.npc[3].rotation = new Vector3(0, 100, 0);
+        saveData.npc[3].centerTriger = new Vector3(-0.003216982f, 0.7288874f, -0.05846584f);
+        saveData.npc[3].sizeTriger = new Vector3(7.255716f, 2.327804f, 5.515227f);
 
         return saveData;
     }
