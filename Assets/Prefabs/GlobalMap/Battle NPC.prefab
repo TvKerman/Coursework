@@ -362,6 +362,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _player: {fileID: 0}
   _gameManager: {fileID: 0}
+  _message: {fileID: 0}
 --- !u!114 &8800469563961461221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -374,23 +375,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b34bd1b55fb65349aaedec60e5f64d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyCode: 1
+  keyCode: 3
   battleData:
-    keyCodeNPC: 1
+    keyCodeNPC: 3
+    isOnHellRegion: 1
     meleeEnemies:
+    - isActive: 1
+      maxHealtPoints: 1000
+      damage: 1000
+      initiative: 1000
     - isActive: 0
-      maxHealtPoints: 0
-    - isActive: 1
       maxHealtPoints: 100
-    - isActive: 1
+      damage: 0
+      initiative: 0
+    - isActive: 0
       maxHealtPoints: 100
+      damage: 0
+      initiative: 0
     rangeEnemies:
-    - isActive: 1
-      MaxHealthPoints: 50
     - isActive: 0
-      MaxHealthPoints: 0
-    - isActive: 1
-      MaxHealthPoints: 50
+      maxHealthPoints: 50
+      damage: 0
+      initiative: 0
+    - isActive: 0
+      maxHealthPoints: 0
+      damage: 0
+      initiative: 0
+    - isActive: 0
+      maxHealthPoints: 0
+      damage: 0
+      initiative: 0
 --- !u!1 &6395709970227817985
 GameObject:
   m_ObjectHideFlags: 0

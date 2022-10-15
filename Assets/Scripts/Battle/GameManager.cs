@@ -49,6 +49,8 @@ namespace TurnBasedBattleSystemFromRomchik
         private bool _playerLose = false;
         private bool _playerWin = false;
 
+        private float _timer = 3.0f;
+
         private void Awake()
         {
             _saveSystem = new JSONSaveSystem();
@@ -104,15 +106,17 @@ namespace TurnBasedBattleSystemFromRomchik
             {
                 EndBattle();
             }
-            else if (Input.GetKey(KeyCode.Return)) {
-                
+            else if (_isButtleOver && _timer <= 0f)
+            { //Input.GetKey(KeyCode.Return)) {
+
                 if (_playerWin)
                 {
                     _saveData.playerData.isPlayerCanMove = true;
                     _saveData.playerData.isPlayerNotLose = true;
                     _saveData.npc[_saveData.battleData.keyCodeNPC].isActive = false;
                 }
-                else if (_playerLose) {
+                else if (_playerLose)
+                {
                     _saveData.playerData.isPlayerCanMove = false;
                     _saveData.playerData.isPlayerNotLose = false;
                 }
@@ -122,6 +126,9 @@ namespace TurnBasedBattleSystemFromRomchik
                 _Friendly.SetBool("Deload", true);
                 _Enemy.SetBool("Deload", true);
                 AsyncOperation operation = SceneManager.LoadSceneAsync(1);
+            }
+            else if (_isButtleOver && _timer > 0) { 
+                _timer -= Time.deltaTime;
             }
 
             Unit currentUnit = _stepSystem.UnitInList;
@@ -266,12 +273,12 @@ namespace TurnBasedBattleSystemFromRomchik
         }
 
         private void HideUserInterface() {
-            _UIturn.gameObject.SetActive(false);
+            Interface.SetActive(false);
             _stepSystem.HideUnitIcons();
         }
 
         private void ShowUserInterface() {
-            _UIturn.gameObject.SetActive(true);
+            Interface.SetActive(true);
             _stepSystem.ShowUnitIcons();
         }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NPCState : MonoBehaviour, IStateSave
 {
-    [SerializeField] private bool isOnHellRegion;
+    //[SerializeField] private bool isOnHellRegion;
     [SerializeField] private int keyCode;
     [SerializeField] private BattleData battleData;
     public void SaveState(ref SaveData saveData) {
@@ -16,7 +16,7 @@ public class NPCState : MonoBehaviour, IStateSave
         saveData.npc[keyCode].isActive = gameObject.activeSelf;
         if (gameObject.GetComponent<NPCLogic>().StartBattle) {
             saveData.battleData = this.battleData;
-            saveData.battleData.isOnHellRegion = isOnHellRegion;
+            //saveData.battleData.isOnHellRegion = isOnHellRegion;
         }
     }
 

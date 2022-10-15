@@ -20,4 +20,6 @@ public interface ISaveSystem {
     public string GetPathSaveDirectory(string fileName);
 
     void DeleteSave(string filePath);
+
+    public void DeleteAutoSave();
 }

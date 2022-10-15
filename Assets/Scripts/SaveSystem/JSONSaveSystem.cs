@@ -133,4 +133,11 @@ public class JSONSaveSystem : ISaveSystem
             File.Delete(filePath);
         }
     }
+
+    public void DeleteAutoSave() {
+        string filePath = GetPathSaveDirectory(_fileNameAutoSave);
+        if (File.Exists(filePath)) { 
+            File.Delete(filePath);
+        }
+    }
 }

@@ -8,6 +8,7 @@ public class NPCLogic : MonoBehaviour
 
     [SerializeField] private Movement _player;
     [SerializeField] private GameManager _gameManager;
+    [SerializeField] private GameObject _message;
 
     private int _keyScene = 2;
 
@@ -47,10 +48,12 @@ public class NPCLogic : MonoBehaviour
     private void GetMessage() {
         if (!_isGetMessage) {
             Debug.Log(message);
+            _message.SetActive(true);
             _isGetMessage = true;
         }
         if (Input.GetKey(KeyCode.Return) || _isButtonCloseDialog) {
             _isStartBattle = true;
+            _message.SetActive(false);
         }
     }
 

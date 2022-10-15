@@ -8,9 +8,10 @@ public class GameManager : MonoBehaviour
     private GameObject _Player;
     [SerializeField] private GameObject exitMainMenu;
     [SerializeField] private GameObject LoadCanvas;
+    [SerializeField] private GameObject MessagePlayerLose;
+    [SerializeField] private GameObject MessageBossWin;
     private List<GameObject> _npc = new List<GameObject>();
     private ISaveSystem _saveSystem;
-
 
     private bool _isPlayerNotLose = true;
     private bool _isPlayerNotWin = true;
@@ -26,6 +27,27 @@ public class GameManager : MonoBehaviour
         _saveSystem = new JSONSaveSystem();
    
         LoadState();
+        if (!_isPlayerNotLose)
+        {
+            foreach (var npc in _npc)
+            {
+                npc.GetComponent<BoxCollider>().enabled = false;
+            }
+            _Player.SetActive(false);
+            
+        }
+        if (!_isPlayerNotLose && _isPlayerNotWin)
+        {
+            //MessagePlayerLose.SetActive(true);
+            //_isBossWin = true;
+            gameObject.GetComponent<Animator>().SetBool("PlayerLose", true);
+        }
+        else if (!_isPlayerNotLose && !_isPlayerNotWin) {
+            //MessageBossWin.SetActive(true);
+            //_isPlayerLose=true;
+            gameObject.GetComponent<Animator>().SetBool("BossWin", true);
+        }
+
     }
 
 
@@ -36,12 +58,6 @@ public class GameManager : MonoBehaviour
             _Player.GetComponent<Movement>().PlayerCanMove = !_Player.GetComponent<Movement>().PlayerCanMove;
         }
 
-        if (!_isPlayerNotLose) {
-            Debug.Log("Поплачь...");
-        }
-        if (!_isPlayerNotWin) {
-            Debug.Log("МегаХорош. Сильно не радуйся");
-        }
     }
 
     public void SaveState() { 
@@ -91,6 +107,21 @@ public class GameManager : MonoBehaviour
     public void Close() {
         exitMainMenu.SetActive(!exitMainMenu.activeSelf);
         _Player.GetComponent<Movement>().PlayerCanMove = !_Player.GetComponent<Movement>().PlayerCanMove;
+    }
+
+    public void EndGameExitMainMenu() { 
+        _saveSystem.DeleteAutoSave();
+        MessageBossWin.SetActive(false);
+        MessagePlayerLose.SetActive(false);
+        LoadCanvas.GetComponent<Animator>().SetBool("Deload", true);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(0);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player") {
+            _isPlayerNotWin = false;
+        }
     }
 
     public bool PlayerNotLose {
