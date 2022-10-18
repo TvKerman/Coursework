@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dd890bf22be1194a94f8e23532d11b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 0
-  columns: 0
+  rows: 15
+  columns: 15
   scale: 1
   gridPrefab: {fileID: 8832859940012359580, guid: cebfdca0e3ed40740bc063d7ef2c83a9, type: 3}
   boxPrefab: {fileID: 3903519797377813104, guid: 6a1af296ba7f010499a1f7205989b227, type: 3}

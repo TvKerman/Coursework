@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace DynamicBattlePrototype
 {
@@ -36,7 +37,7 @@ namespace DynamicBattlePrototype
         void Start()
         {
             _timer = _timeOut;
-            _stepSystem = new StepSystem();
+            _stepSystem = new DynamicBattlePrototype.StepSystem();
 
             _xLeftBoarder = 2f;
             _yDownBoarder = 2f;
@@ -46,6 +47,10 @@ namespace DynamicBattlePrototype
 
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                SceneManager.LoadScene(0);
+            }
+
             if (!_isAnimationCamera)
                 CameraControl();
 

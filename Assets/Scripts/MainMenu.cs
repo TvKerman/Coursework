@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class MainMenu : MonoBehaviour
 {
@@ -15,19 +16,35 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button _bonusBtn;
 
     [SerializeField] private GameObject LoadCanvas;
-    [SerializeField] private GameObject ButtonCanvas;
+    [SerializeField] private GameObject ButtonCanvas; 
+    [SerializeField] private AudioSource mainTheme;
+    [SerializeField] private VideoPlayer videoPlayer;
 
+    private long countFrame;
     private ISaveSystem _saveSystem;
     private bool _autosaveExist = false;
 
     private void Awake()
     {
+        countFrame = (long)videoPlayer.frameCount - 1;
         _saveSystem = new JSONSaveSystem();
         _autosaveExist = _saveSystem.SavingExists();
+
         if (_autosaveExist)
             _continueBtn.gameObject.SetActive(true);
         else 
             _continueBtn.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if ((videoPlayer.frame) >= countFrame) { 
+            videoPlayer.Stop();
+            ButtonCanvas.SetActive(true);
+            videoPlayer.gameObject.SetActive(false);
+            mainTheme.Play();
+
+        }
     }
 
     public void NewGame() {
@@ -47,13 +64,13 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Продолжить");
     }
 
-    public void LoadGame() {
-        // Необходимо меню выбора сохранений.
-
-        // После выбора сохранения Autosave.json перезаписывается с данными выбранного сохранения.
-        // Далее происходит всё тоже, что и при кнопке Continue. 
-        Debug.Log("Загрузить сохранение");
-    }
+    //public void LoadGame() {
+    //    // Необходимо меню выбора сохранений.
+    //
+    //    // После выбора сохранения Autosave.json перезаписывается с данными выбранного сохранения.
+    //    // Далее происходит всё тоже, что и при кнопке Continue. 
+    //    Debug.Log("Загрузить сохранение");
+    //}
 
     public void Settings() {
         //Дебаг тут красноречив
@@ -67,9 +84,21 @@ public class MainMenu : MonoBehaviour
         AsyncOperation operation =  SceneManager.LoadSceneAsync(3);
     }
 
+    public void Titles() {
+        mainTheme.Stop();
+        ButtonCanvas.SetActive(false);
+        videoPlayer.gameObject.SetActive(true);
+        videoPlayer.Play();
+    }
+
     private void DeloadAnimation() {
         LoadCanvas.GetComponent<Animator>().SetBool("Deload", true);
-        ButtonCanvas.GetComponent<Animator>().SetBool("Deload", true);
+        //AnimationButtonCanvas.GetComponent<Animation>().Play();
+        ButtonCanvas.SetActive(false);
+    }
+
+    public GameObject Buttons {
+        get { return ButtonCanvas; }
     }
 
     public void Exit() {

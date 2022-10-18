@@ -24,14 +24,15 @@ public class GridBehavior : MonoBehaviour
     void Awake()
     {
         if (gridPrefab)
-            GenerateGrid(GenerateLevelData());
-            //GenerateGrid();
+            //GenerateGrid(GenerateLevelData());
+            GenerateGrid();
         else
             Debug.Log("Не удалось инициализировать Grid");
     }
 
     void GenerateGrid()
     {
+        gridArray = new GameObject[columns, rows];
         for (int i = 0; i < columns; i++)
         {
             for (int j = 0; j < rows; j++)
@@ -99,7 +100,7 @@ public class GridBehavior : MonoBehaviour
     }
 
     string[] GenerateLevelData() {
-        string filename = Directory.GetCurrentDirectory() + "\\Assets\\Scenes\\Grid\\Grid3.txt";
+        string filename = Directory.GetCurrentDirectory() + "\\Assets\\Scenes\\Grid\\Grid2.txt";
         StreamReader levelfile = new StreamReader(filename);
         string level = levelfile.ReadToEnd();
         levelfile.Close();
