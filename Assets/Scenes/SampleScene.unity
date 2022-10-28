@@ -1314,7 +1314,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 383935475}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 67.21, y: 9.616, z: 65.12}
+  m_LocalPosition: {x: 21.89, y: 39.4, z: 590.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2194,7 +2194,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 769140033}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 67.21, y: 14.616, z: 60.120003}
+  m_LocalPosition: {x: 21.89, y: 44.4, z: 585.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2497,7 +2497,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 868333932}
-  m_LocalRotation: {x: 0.32897562, y: 0.000000016248643, z: -0.000000005660479, w: 0.9443385}
+  m_LocalRotation: {x: 0.32897562, y: 0.000000016248649, z: -0.0000000056604805, w: 0.94433844}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2586,7 +2586,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.3558875, y: 0, z: 0, w: 0.9345288}
-  m_LocalPosition: {x: 67.21, y: 14.616, z: 60.120003}
+  m_LocalPosition: {x: 21.89, y: 44.4, z: 585.26}
   m_LocalScale: {x: 1, y: 0.93886036, z: 1.0855956}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3502,6 +3502,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
+      propertyPath: isOnHellRegion
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
       propertyPath: battleData.keyCodeNPC
       value: 3
       objectReference: {fileID: 0}
@@ -3510,12 +3514,16 @@ PrefabInstance:
       value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
+      propertyPath: battleData.meleeEnemies.Array.data[1].damage
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
       propertyPath: battleData.meleeEnemies.Array.data[0].isActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
       propertyPath: battleData.meleeEnemies.Array.data[1].isActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
       propertyPath: battleData.meleeEnemies.Array.data[2].isActive
@@ -3534,7 +3542,15 @@ PrefabInstance:
       value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
+      propertyPath: battleData.meleeEnemies.Array.data[1].initiative
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
       propertyPath: battleData.meleeEnemies.Array.data[0].maxHealtPoints
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
+      propertyPath: battleData.meleeEnemies.Array.data[1].maxHealtPoints
       value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 8800469563961461221, guid: c0bea16e6fca1934c9e14427f2da648b, type: 3}
